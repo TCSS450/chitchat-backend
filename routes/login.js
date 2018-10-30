@@ -15,25 +15,24 @@ router.use(bodyParser.json());
 router.post('/', (req, res) => {
     let email = req.body['email'];
     let theirPw = req.body['password'];
-    let wasSuccessful = false;
     const toSend = {"status": 4};
     if(email && theirPw) {
         db.any("SELECT Password, Salt FROM Members WHERE Email=$1", [email])
-            .then(row => {
-                res.send({"rowCount": row.length});
-            })
-            .catch(() => { 
-                //db.many expects 1 or more rows, if it get 0 rows we must catch error
-                //If we get back zero rows then the credentials never existed in DB
-                toSend.status = 2;
-                res.send(toSend);
+            .then(row => { // if query execution is valid
+                if (row.length === 0) { // no rows returned
+                    toSend.status = 2;
+                } else  if (row.length === 1) { // single row returned
+                    let salt = row['salt'];
+                    //Retrieve our copy of the password
+                    let ourSaltedHash = row['password']; 
+                    //Combined their password with our salt, then hash
+                    let theirSaltedHash = getHash(theirPw, salt); 
+                    //Did our salted hash match their salted hash?
+                    const wasCorrectPw = ourSaltedHash === theirSaltedHash; 
+                    toSend.status = (wasCorrectPw) ? 1 : 3;
+                }
             });
-    } else {
-        res.send(toSend);
-        /*res.send({
-            success: false,
-            message: 'missing credentials'
-        });*/
-    }
+    } 
+    res.send(toSend);
 });
 module.exports = router;
