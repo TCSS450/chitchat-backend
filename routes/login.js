@@ -9,28 +9,40 @@ const bodyParser = require("body-parser");
 const crypto = require("crypto");
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
-
+        /*
+	    1- Successful Login
+		2- Email/NN doesn’t exist in DB (prompt user to register)
+		3- Email/NN exists in DB, but password was incorrect (tell user to re-enter pass)
+		4- Email/NN exists, but user is still not verified
+        5- Incorrect Input to endpoint / any other error */
+        
 router.post('/', (req, res) => {
-    let email = req.body['email'];
-    let theirPw = req.body['password'];
-    if(email && theirPw) {
-        db.any("SELECT Password, Salt FROM Members WHERE Email=$1", [email])
-            .then(row => { // if query execution is valid
-                if (row.length === 0) { // no rows returned
+    const emailNN = req.body['email'];
+    const theirPw = req.body['password'];
+    if (emailNN && theirPw) {
+        db.any("SELECT Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
+            .then(row => { //if query execution is valid
+                if (row.length === 0) { // Email or NN DNE in DB
                     res.send({"status" : 2});
-                } else  if (row.length === 1) { // single row returned
-                    let salt = row[0].salt;
-                    let ourSaltedHash = row[0].password; 
-                    let theirSaltedHash = getHash(theirPw, salt); 
-                    const wasCorrectPw = ourSaltedHash === theirSaltedHash; 
-                    res.send({"status": (wasCorrectPw) ? 1 : 3});
+                } else if (row.length === 1) { // single row returned
+                    if (row[0].is_verified) { // if that account is verified
+                        let salt = row[0].salt;
+                        let ourSaltedHash = row[0].password; 
+                        let theirSaltedHash = getHash(theirPw, salt); 
+                        const wasCorrectPw = ourSaltedHash === theirSaltedHash; 
+                        res.send({"status": (wasCorrectPw) ? 1 : 3});
+                    } else { // Email or NN exists in DB but unverified account
+                        console.log(row[0].is_verified);
+                        console.log(row);
+                        res.send({"status" : 4});
+                    }
                 }
             })
             .catch(() => {
-                res.send({"status": 4});
-            })
+                res.send({"status" : 5});
+            });
     } else {
-        res.send({"status": 4});
+        res.send({"status" : 5});
     }
 });
 module.exports = router;
