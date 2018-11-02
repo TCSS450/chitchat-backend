@@ -30,6 +30,7 @@ router.post('/', (req, res) => {
                         let ourSaltedHash = row[0].password; 
                         let theirSaltedHash = getHash(theirPw, salt); 
                         const wasCorrectPw = ourSaltedHash === theirSaltedHash; 
+                        console.log(theirPw);
                         res.send({"status": (wasCorrectPw) ? 1 : 3});
                     } else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);
