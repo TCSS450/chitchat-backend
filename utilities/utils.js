@@ -4,16 +4,40 @@ let db = require('./sql_conn.js');
 //We use this create the SHA256 hash
 const crypto = require("crypto");
 
-function sendEmail(from, receiver, subj, message) {
-  //research nodemailer for sending email from node.
-  // https://nodemailer.com/about/
-  // https://www.w3schools.com/nodejs/nodejs_email.asp
-  //create a burner gmail account 
-  //make sure you add the password to the environmental variables
-  //similar to the DATABASE_URL and PHISH_DOT_NET_KEY (later section of the lab)
+var nodemailer = require('nodemailer');
 
-  //fake sending an email for now. Post a message to logs. 
-  console.log('Email sent: ' + message);
+var validator = require('validator');
+ 
+
+function isEmailValid(email) {
+    console.log("inside isEmailValid(), email is: " + validator.isEmail(email) + " " + email);
+    return validator.isEmail(email);
+}
+
+function sendEmail(receiver, verificationCode) {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            //TODO Make these Heroku Variables
+            user: "cc.chitchatbot@gmail.com",
+            pass: "_1134206!"
+        }
+      });
+      
+      var mailOptions = {
+        from: 'cc.chitchatbot@gmail.com',
+        to: receiver,
+        subject: 'Welcome to Chit Chat!',
+        text: 'Please verify your account using the code: ' + verificationCode
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
 }
 
 /**
@@ -27,5 +51,5 @@ function getHash(pw, salt) {
 }
 
 module.exports = { 
-    db, getHash, sendEmail
+    db, getHash, sendEmail, isEmailValid
 };

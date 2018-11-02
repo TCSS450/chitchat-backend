@@ -8,6 +8,7 @@ const crypto = require("crypto");
 let db = require('../utilities/utils').db;
 let getHash = require('../utilities/utils').getHash;
 let sendEmail = require('../utilities/utils').sendEmail;
+let utility = require('../utilities/utils');
 var router = express.Router();
 
 const bodyParser = require("body-parser");
@@ -18,24 +19,25 @@ router.post('/', (req, res) => {
     res.type("application/json");
 
     //Retrieve data from query params
-    var first = req.body['first'];
-    var last = req.body['last'];
-    var username = req.body['username'];
-    var email = req.body['email'];
-    var password = req.body['password'];
+    let email = req.body['email'];
+    let password = req.body['password'];
+    let nickname = req.body['nickname'];
+    let first = req.body['first'];
+    let last = req.body['last'];
+    let phoneNumber = req.body['phoneNumber'];
+    let displayType = req.body['displayType'];
+    let authNumber = req.body['authNumber'];
+
     //Verify that the caller supplied all the parameters
     //In js, empty strings or null values evaluate to false
-    if(first && last && username && email && password) {
-        //We're storing salted hashes to make our application more secure
-        //If you're interested as to what that is, and why we should use it
-        //watch this youtube video: https://www.youtube.com/watch?v=8ZtInClXe1Q
+    if(email && password && nickname && first && last 
+        && phoneNumber && displayType && authNumber) {
+
+
         let salt = crypto.randomBytes(32).toString("hex");
         let salted_hash = getHash(password, salt);
-        
-        //Use .none() since no result gets returned from an INSERT in SQL
-        //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
-        //If you want to read more: https://stackoverflow.com/a/8265319
-        let params = [first, last, username, email, salted_hash, salt];
+        //let params = [first, last, username, email, salted_hash, salt];
+        /*
         db.none("INSERT INTO MEMBERS(FirstName, LastName, Username, Email, Password, Salt) VALUES ($1, $2, $3, $4, $5, $6)", params)
         .then(() => {
             //We successfully added the user, let the user know
@@ -52,14 +54,50 @@ router.post('/', (req, res) => {
                 success: false,
                 error: err
             });
-        });
+        });*/
+        let params = [first, last, email, salted_hash, salt, authNumber, nickname, false, displayType, phoneNumber];
+
+        db.any("SELECT email, is_verified FROM Members WHERE email = $1", [email])
+            .then(rows => {
+                if (rows.length > 0) { // Member with email already exists in DB
+                    res.send({"status": (rows[0].is_verified) ? 3 : 2});
+                } else if (rows.length === 0) { // Email is not in DB, but we need to check for duplicate NN
+                    db.any("SELECT nickname FROM Members WHERE nickname = $1", [nickname]) 
+                        .then(rows => {
+                            if (rows.length === 0) { // nickname does not exists, attempt to verification mail to user
+                                if (utility.isEmailValid(email)) { // email is valid
+                                    db.any(`INSERT INTO Members (firstname, lastname, email, password,
+                                         salt, verification, nickname, is_verified, display_type, phone_number) VALUES 
+                                         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, params)
+                                         .then(() => {
+                                            utility.sendEmail(email, authNumber);
+                                            res.send({"status": 1});
+                                         })
+                                         .catch(() => {
+                                            res.send({"status": 6});
+                                         })
+
+                                } else  { // email is not valid, ask for another email address
+                                    res.send({"status": 5});
+                                }
+                            } else if (rows.length > 0) { // nickname already exists, ask user for another nickname
+                                res.send({"status": 4});
+                            }
+                        })
+                        .catch(() => {
+                            res.send({"status": 6});
+                        })
+                }
+            })
     } else {
-        res.send({
-            success: false,
-            input: req.body,
-            error: "Missing required user information"
-        });
+        res.send({"status": 6});
     }
+    /*1- Register Successful (Tell User to verify, send authNumber to their email)
+        2- Email already exists without verification (Prompt user to verify)
+        3- Email already exists with verification (Tell user to login)
+        4- Nickname already exists (tell user to provide another nickname)
+        5- Email is invalid (prompt user to enter a valid email)
+        6- Incorrect Input to endpoint / any other error*/
 });
 
 module.exports = router;
