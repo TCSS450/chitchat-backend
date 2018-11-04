@@ -36,25 +36,6 @@ router.post('/', (req, res) => {
 
         let salt = crypto.randomBytes(32).toString("hex");
         let salted_hash = getHash(password, salt);
-        //let params = [first, last, username, email, salted_hash, salt];
-        /*
-        db.none("INSERT INTO MEMBERS(FirstName, LastName, Username, Email, Password, Salt) VALUES ($1, $2, $3, $4, $5, $6)", params)
-        .then(() => {
-            //We successfully added the user, let the user know
-            res.send({
-                success: true
-            });
-            sendEmail("cfb3@uw.edu", email, "Welcome!", "<strong>Welcome to our app!</strong>");
-        }).catch((err) => {
-            //log the error
-            console.log(err);
-            //If we get an error, it most likely means the account already exists
-            //Therefore, let the requester know they tried to create an account that already exists
-            res.send({
-                success: false,
-                error: err
-            });
-        });*/
         let params = [first, last, email, salted_hash, salt, authNumber, nickname, false, displayType, phoneNumber];
 
         db.any("SELECT email, is_verified FROM Members WHERE email = $1", [email])
@@ -76,7 +57,6 @@ router.post('/', (req, res) => {
                                          .catch(() => {
                                             res.send({"status": 6});
                                          })
-
                                 } else  { // email is not valid, ask for another email address
                                     res.send({"status": 5});
                                 }
