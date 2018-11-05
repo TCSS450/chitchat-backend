@@ -15,10 +15,10 @@ router.post('/', (req, res) => {
                 if (selectRow.length === 1) {
                     db.any("UPDATE Members SET verification = $1 WHERE Email = $2 OR Nickname = $2", [numToChange, email])
                         .then(rows => {
-                            res.send({"status": 1});
                             console.log(selectRow[0].email);
-
                             sendEmail(selectRow[0].email, numToChange);
+                            res.send({"status": 1, "email": selectRow[0].email});
+
                         })
                         .catch(() => {
                             res.send({"status": 2});
