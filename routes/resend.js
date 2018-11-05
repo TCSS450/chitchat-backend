@@ -10,13 +10,15 @@ router.post('/', (req, res) => {
     const email = req.body['email'];
     const numToChange = req.body['inputToken'];
     if (email && numToChange) {
-        db.any("SELECT verification, is_verified, memberid FROM Members WHERE Email = $1", [email])
-            .then(rows => {
-                if (rows.length === 1) {
-                    db.any("UPDATE Members SET verification = $1 WHERE Email = $2", [numToChange, email])
+        db.any("SELECT email, verification, is_verified, memberid FROM Members WHERE Email=$1 OR Nickname=$1", [email])
+            .then(selectRow => {
+                if (selectRow.length === 1) {
+                    db.any("UPDATE Members SET verification = $1 WHERE Email = $2 OR Nickname = $2", [numToChange, email])
                         .then(rows => {
                             res.send({"status": 1});
-                            sendEmail(email, numToChange);
+                            console.log(selectRow[0].email);
+
+                            sendEmail(selectRow[0].email, numToChange);
                         })
                         .catch(() => {
                             res.send({"status": 2});
