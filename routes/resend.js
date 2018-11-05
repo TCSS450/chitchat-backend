@@ -9,7 +9,6 @@ router.use(bodyParser.json());
 router.post('/', (req, res) => {
     const email = req.body['email'];
     const numToChange = req.body['inputToken'];
-    
     if (email && numToChange) {
         db.any("SELECT verification, is_verified, memberid FROM Members WHERE Email = $1", [email])
             .then(rows => {
@@ -32,8 +31,5 @@ router.post('/', (req, res) => {
     } else {
         res.send({"status": 2});
     }
-
-
-    
 });
 module.exports = router;
