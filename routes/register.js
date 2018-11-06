@@ -26,12 +26,12 @@ router.post('/', (req, res) => {
     let last = req.body['last'];
     let phoneNumber = req.body['phoneNumber'];
     let displayType = req.body['displayType'];
-    let authNumber = req.body['authNumber'];
+    let authNumber = Math.floor(1000 + Math.random() * 9000); 
 
     //Verify that the caller supplied all the parameters
     //In js, empty strings or null values evaluate to false
     if(email && password && nickname && first && last 
-        && phoneNumber && displayType && authNumber) {
+        && phoneNumber && displayType) {
 
 
         let salt = crypto.randomBytes(32).toString("hex");

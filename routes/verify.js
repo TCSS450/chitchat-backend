@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
         db.any("SELECT verification, is_verified, memberid FROM Members WHERE Email = $1", [email])
             .then(rows => {
                 if (rows.length === 1) {
-                    if (rows[0].verification !== inputedNumber) { // numbers don't match
+                    if (rows[0].verification != inputedNumber) { // numbers don't match
                         res.send({"status": 2});
                     } else { // inputed verification matched thats in the DB
                         db.any("UPDATE Members SET is_verified = true WHERE memberid = $1", [rows[0].memberid])
@@ -33,9 +33,6 @@ router.post('/', (req, res) => {
             })
     } else {
         res.send({"status": 3});
-    }
-
-
-    
+    }  
 });
 module.exports = router;
