@@ -10,8 +10,8 @@ app.use('/login', require('./routes/login.js'));
 app.use('/register', require('./routes/register.js'));
 app.use('/verify', require('./routes/verify.js'));
 app.use('/resend', require('./routes/resend.js'));
-app.use('/password-reset', require('./routes/password-reset.js'));
-app.use('/password-change', require('./routes/password-change.js'));
+// app.use('/password-reset', require('./routes/password-reset.js'));
+// app.use('/password-change', require('./routes/password-change.js'));
 
 /*
  * Return HTML for the / end point. 
