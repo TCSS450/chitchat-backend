@@ -13,22 +13,25 @@ const bodyParser = require("body-parser");
 router.use(bodyParser.json());
 router.post('/', (req, res) => {
     const email = req.body['email'];
-    console.log("in newPin");
+    // console.log("in newPin");
     if (email) {
-        console.log("email is valid");
-        console.log(email);
-        db.any("SELECT memberid, verification FROM Members WHERE Email = $1", [email])
+        // console.log("email is valid");
+        // console.log(email);
+        db.any("SELECT memberid, verification, nickname, phone_number FROM Members WHERE Email = $1", [email])
             .then(rows => {
                 if (rows.length == 1) {
-                    console.log(rows[0]);
+                    // console.log(rows[0]);
                     let authNumber = Math.floor(1000 + Math.random() * 9000); 
                     db.any("UPDATE Members SET verification = $1 WHERE memberid = $2", [authNumber, rows[0].memberid])
                             .then(() => { 
-                                console.log("send email?");
+                                // console.log("send email?");
                                 utility.sendEmail(email, authNumber);
-                                res.send({"status": 1, "verification":authNumber});
+                                res.send(
+                                    {"status": 1, "email": email, 
+                                     "nickname": rows[0].nickname, "phone_number": rows[0].phone_number
+                                    });
                             }).catch(() => {
-                                console.log("catch after sql ");
+                                // console.log("catch after sql ");
                                 res.send({"status": 2});
                         })
                 } else {
