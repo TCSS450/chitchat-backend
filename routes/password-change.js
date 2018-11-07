@@ -25,7 +25,6 @@ router.post('/', (req, res) => {
         db.any("SELECT * FROM Members WHERE Email = $1 or nickname = $1", [user])
             .then(rows => {
                 if (rows.length === 1) {
-         
                     db.any("UPDATE Members SET password = $1, salt = $2 WHERE memberid = $3", 
                                                                 [salted_hash, salt, rows[0].memberid])
                         .then(() => {
@@ -33,7 +32,6 @@ router.post('/', (req, res) => {
                         }).catch(() => {
                             res.send({"status": 2}); // This should not happen unless server crashes or something
                         })
- 
                 } else {
                     res.send({"status": 2}); // error user or nickname not found
                 }
