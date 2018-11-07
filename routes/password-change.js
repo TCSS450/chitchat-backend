@@ -6,8 +6,12 @@ let getHash = require('../utilities/utils').getHash;
 
 const bodyParser = require("body-parser");
 
+//We use this create the SHA256 hash
+const crypto = require("crypto");
+
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
+// console.log("in password change");
 router.post('/', (req, res) => {
     const user = req.body['user'];
     const password = req.body['password'];
@@ -18,7 +22,7 @@ router.post('/', (req, res) => {
         let salted_hash = getHash(password, salt);
 
         // SELECT * FROM Members WHERE Email = 'joshua9@uw.edu' or nickname = 'nick';
-        db.any("SELECT * FROM Members WHERE Email = $1 or nickname = $1", [email])
+        db.any("SELECT * FROM Members WHERE Email = $1 or nickname = $1", [user])
             .then(rows => {
                 if (rows.length === 1) {
          
