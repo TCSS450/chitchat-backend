@@ -41,7 +41,7 @@ function sendToIndividual(token, msg, from) {
                 title: 'New Message from '.concat(from),
                 body: msg,
                 color: "#0000FF",
-                //icon: '@drawable/ic_notification_phish'
+                icon: '@mipmap/ic_launcher_foreground'
             },
             data: {
                 "type": "contacrt",
