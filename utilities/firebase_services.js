@@ -1,5 +1,5 @@
 var admin = require('firebase-admin');
-var serviceAccount = require("./chitchat-fcm-<GROUP3>-firebase-adminsdk-swjxf-05a80c87aa.json");
+var serviceAccount = require("./chitchat-fcm-GROUP3-firebase-adminsdk-swjxf-05a80c87aa.json");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://lab5-fcm-cfb3.firebaseio.com'
