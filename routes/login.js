@@ -70,7 +70,7 @@ router.post('/with_token', (req, res) => {
     }
 });
 
-router.post('/with_token', (req, res) => {
+router.post('/', (req, res) => {
     const emailNN = req.body['email'];
     const theirPw = req.body['password'];
     if (emailNN && theirPw && token) {
