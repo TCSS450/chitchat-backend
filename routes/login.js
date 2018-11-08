@@ -18,20 +18,20 @@ router.use(bodyParser.json());
 
         
 router.post('/with_token', (req, res) => {
-    const emailNN = req.body['email'];
+    const emailNNT = req.body['email'];
     let token = req.body['token'];
-    const theirPw = req.body['password'];
-    if (emailNN && theirPw && token) {
-        db.any("SELECT Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
+    const theirPwT = req.body['password'];
+    if (emailNNT && theirPwT && token) {
+        db.any("SELECT Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNNT])
             .then(row => { //if query execution is valid
                 if (row.length === 0) { // Email or NN DNE in DB
                     res.send({"status" : 2});
                 } else if (row.length === 1) { // single row returned
                     if (row[0].is_verified) { // if that account is verified
-                        let salt = row[0].salt;
-                        let ourSaltedHash = row[0].password; 
-                        let theirSaltedHash = getHash(theirPw, salt); 
-                        const wasCorrectPw = ourSaltedHash === theirSaltedHash;
+                        let saltT = row[0].salt;
+                        let ourSaltedHashT = row[0].password; 
+                        let theirSaltedHashT = getHash(theirPwT, saltT); 
+                        const wasCorrectPw = ourSaltedHashT === theirSaltedHashT;
                         if (wasCorrectPw) {
                             //password and email match. Save the current FB Token
                             let id = row['memberid'];
