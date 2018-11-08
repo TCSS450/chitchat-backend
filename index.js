@@ -13,6 +13,7 @@ app.use('/resend', require('./routes/resend.js'));
 app.use('/password-forgot', require('./routes/password-forgot.js'));
 app.use('/password-change', require('./routes/password-change.js'));
 app.use('/search-members', require('./routes/search-members.js'));
+app.use('/messaging', require('./routes/messaging.js'));
 
 /*
  * Return HTML for the / end point. 
