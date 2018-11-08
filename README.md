@@ -1,3 +1,5 @@
+Backend with connection to web endpoints for ChitChat android app
+
 # Description of Files in this package
 * `package.json` and `package-lock.json`
     * These files are used to describe dependencies for the project. There are several packages we use for connecting to databases, connecting to our Mail client, etc.
