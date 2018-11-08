@@ -16,11 +16,10 @@ router.use(bodyParser.json());
 		4- Email/NN exists, but user is still not verified
         5- Incorrect Input to endpoint / any other error */
         
-router.post('/with_token', (req, res) => {
+router.post('/', (req, res) => {
     const emailNN = req.body['email'];
     const theirPw = req.body['password'];
-    let token = req.body['token'];
-    if (emailNN && theirPw && token) {
+    if (emailNN && theirPw) {
         db.any("SELECT Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
             .then(row => { //if query execution is valid
                 if (row.length === 0) { // Email or NN DNE in DB
@@ -33,26 +32,6 @@ router.post('/with_token', (req, res) => {
                         const wasCorrectPw = ourSaltedHash === theirSaltedHash; 
                         console.log(theirPw);
                         res.send({"status": (wasCorrectPw) ? 1 : 3});
-                    }
-                    if(wasCorrectPw){
-                        let id = row['memberid'];
-                        let params = [id, token];
-                        db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
-                        .then(row => {
-                            res.send({
-                                success: true,
-                                message: "Token Saved"
-                            });
-                        })
-                        .catch(err => {
-                            console.log("failed on insert");
-                            console.log(err);
-                            //If anything happened, it wasn't successful
-                            res.send({
-                                success: false,
-                                message: err
-                            });
-                        })
                     } else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);
                         console.log(row);
@@ -67,6 +46,4 @@ router.post('/with_token', (req, res) => {
         res.send({"status" : 5});
     }
 });
-
-//firebase token storage
 module.exports = router;
