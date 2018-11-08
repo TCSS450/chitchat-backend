@@ -38,8 +38,9 @@ router.post('/', (req, res) => {
         let salted_hash = getHash(password, salt);
         let params = [first, last, email, salted_hash, salt, authNumber, nickname, false, displayType, phoneNumber];
 
-        db.any("SELECT email, is_verified FROM Members WHERE email = $1", [email])
+        db.any("SELECT email, is_verified FROM Members WHERE LOWER(email) = LOWER($1)", [email])
             .then(rows => {
+
                 if (rows.length > 0) { // Member with email already exists in DB
                     res.send({"status": (rows[0].is_verified) ? 3 : 2});
                 } else if (rows.length === 0) { // Email is not in DB, but we need to check for duplicate NN
