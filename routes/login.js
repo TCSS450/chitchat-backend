@@ -68,7 +68,7 @@ router.post('/with_token', (req, res) => {
                     //password and email match. Save the current FB Token
                     let id = row['memberid'];
                     let params = [id, token];
-                    db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId)DO UPDATE SET token=$2;', params)
+                    db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token=$2;', params)
                         .then(row => {
                             res.send({
                                 success: true,
