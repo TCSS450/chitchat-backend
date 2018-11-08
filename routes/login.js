@@ -16,29 +16,28 @@ router.use(bodyParser.json());
 		4- Email/NN exists, but user is still not verified
         5- Incorrect Input to endpoint / any other error */
         
-//firebase token storage
 router.post('/with_token', (req, res) => {
-    let email = req.body['email'];
+    const emailNN = req.body['email'];
+    const theirPw = req.body['password'];
     let token = req.body['token'];
-    let theirPw = req.body['password'];
-    if (email && theirPw && token) {
-        //Using the 'one' method means that only one row should be returned
-        db.one('SELECT MemberID, Password, Salt FROM Members WHERE Email=$1', [email])
-            //If successful, run function passed into .then()
-            .then(row => {
-                let salt = row['salt'];
-                //Retrieve our copy of the password
-                let ourSaltedHash = row['password'];
-
-                //Combined their password with our salt, then hash
-                let theirSaltedHash = getHash(theirPw, salt);
-                //Did our salted hash match their salted hash?
-                let wasCorrectPw = ourSaltedHash === theirSaltedHash;
-                if (wasCorrectPw) {
-                    //password and email match. Save the current FB Token
-                    let id = row['memberid'];
-                    let params = [id, token];
-                    db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token=$2;', params)
+    if (emailNN && theirPw && token) {
+        db.any("SELECT Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
+            .then(row => { //if query execution is valid
+                if (row.length === 0) { // Email or NN DNE in DB
+                    res.send({"status" : 2});
+                } else if (row.length === 1) { // single row returned
+                    if (row[0].is_verified) { // if that account is verified
+                        let salt = row[0].salt;
+                        let ourSaltedHash = row[0].password; 
+                        let theirSaltedHash = getHash(theirPw, salt); 
+                        const wasCorrectPw = ourSaltedHash === theirSaltedHash; 
+                        console.log(theirPw);
+                        res.send({"status": (wasCorrectPw) ? 1 : 3});
+                    }
+                    if(wasCorrectPw){
+                        let id = row['memberid'];
+                        let params = [id, token];
+                        db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
                         .then(row => {
                             res.send({
                                 success: true,
@@ -54,25 +53,20 @@ router.post('/with_token', (req, res) => {
                                 message: err
                             });
                         })
-                } else {
-                    res.send({
-                        success: false
-                    });
+                    } else { // Email or NN exists in DB but unverified account
+                        console.log(row[0].is_verified);
+                        console.log(row);
+                        res.send({"status" : 4});
+                    }
                 }
             })
-            //More than one row shouldn't be found, since table has constraint on it
-            .catch((err) => {
-                //If anything happened, it wasn't successful
-                res.send({
-                    success: false,
-                    message: err
-                });
+            .catch(() => {
+                res.send({"status" : 5});
             });
     } else {
-        res.send({
-            success: false,
-            message: 'missing credentials'
-        });
+        res.send({"status" : 5});
     }
 });
+
+//firebase token storage
 module.exports = router;
