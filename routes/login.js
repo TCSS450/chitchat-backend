@@ -22,7 +22,7 @@ router.post('/with_token', (req, res) => {
     let token = req.body['token'];
     const theirPw = req.body['password'];
     if (emailNN && theirPw && token) {
-        db.any("SELECT Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
+        db.any("SELECT MemberID, Password, Salt, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
             .then(row => { //if query execution is valid
                 if (row.length === 0) { // Email or NN DNE in DB
                     res.send({"status" : 2});
