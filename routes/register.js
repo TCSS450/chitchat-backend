@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
 
         let salt = crypto.randomBytes(32).toString("hex");
         let salted_hash = getHash(password, salt);
-        let params = [first, last, email, salted_hash, salt, authNumber, nickname, false, displayType, phoneNumber];
+        let params = [first, last, email, salted_hash, salt, authNumber, nickname, displayType, phoneNumber];
 
         db.any("SELECT email, is_verified FROM Members WHERE LOWER(email) = LOWER($1)", [email])
             .then(rows => {

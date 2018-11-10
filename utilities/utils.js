@@ -1,5 +1,7 @@
 //Get the connection to Heroku Database
 let db = require('./sql_conn.js');
+let admin = require('./firebase_services.js').admin;
+let fcm_functions = require('./firebase_services.js').fcm_functions;
 
 //We use this create the SHA256 hash
 const crypto = require("crypto");
@@ -50,8 +52,6 @@ function getHash(pw, salt) {
     return crypto.createHash("sha256").update(pw + salt).digest("hex");
 }
 
-let admin = require('./firebase_services.js').admin;
-let fcm_functions = require('./firebase_services.js').fcm_functions;
 
 module.exports = { 
     db, getHash, sendEmail, isEmailValid, admin, fcm_functions
