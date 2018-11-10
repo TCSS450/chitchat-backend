@@ -36,7 +36,7 @@ router.post('/', (req, res) => {
 
         let salt = crypto.randomBytes(32).toString("hex");
         let salted_hash = getHash(password, salt);
-        let params = [first, last, email, salted_hash, salt, authNumber, nickname, displayType, phoneNumber];
+        let params = [first, last, email, salted_hash, salt, authNumber, nickname, false, displayType, phoneNumber];
 
         db.any("SELECT email, is_verified FROM Members WHERE LOWER(email) = LOWER($1)", [email])
             .then(rows => {
@@ -48,7 +48,7 @@ router.post('/', (req, res) => {
                         .then(rows => {
                             if (rows.length === 0) { // nickname does not exists, attempt to verification mail to user
                                 if (utility.isEmailValid(email)) { // email is valid
-                                    db.any(`INSERT INTO Members (firstname, lastname, email, password,
+                                    db.none(`INSERT INTO Members (firstname, lastname, email, password,
                                          salt, verification, nickname, is_verified, display_type, phone_number) VALUES 
                                          ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, params)
                                          .then(() => {

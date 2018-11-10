@@ -27,7 +27,7 @@ router.post("/send", (req, res) => {
             db.manyOrNone('SELECT * FROM FCM_Token')
                 .then(rows => {
                     rows.forEach(element => {
-                        fcm_functions.sendToIndividual(element, message, email);
+                        fcm_functions.sendToIndividual(element['token'], message, email);
                     });
                     res.send({
                         success: true
