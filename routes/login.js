@@ -70,7 +70,7 @@ router.post('/with_token', (req, res) => {
     }
 });
 
-/*
+
 router.post('/', (req, res) => {
     const emailNN = req.body['email'];
     const theirPw = req.body['password'];
@@ -102,6 +102,6 @@ router.post('/', (req, res) => {
         res.send({"status" : 5});
     }
 });
-*/
+
 
 module.exports = router;
