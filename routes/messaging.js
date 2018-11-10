@@ -15,7 +15,7 @@ router.post("/send", (req, res) => {
     if (!email || !message || !chatId) {
         res.send({
             success: false,
-            error: "nickname, message, or chatId not supplied"
+            error: "email, message, or chatId not supplied"
         });
         return;
     }
@@ -27,6 +27,7 @@ router.post("/send", (req, res) => {
             db.manyOrNone('SELECT * FROM FCM_Token')
                 .then(rows => {
                     rows.forEach(element => {
+                        //console.log("GOT HERE");
                         fcm_functions.sendToIndividual(element['token'], message, email);
                     });
                     res.send({
