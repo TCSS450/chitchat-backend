@@ -53,7 +53,10 @@ router.post('/', (req, res) => {
                                          ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`, params)
                                          .then(() => {
                                             utility.sendEmail(email, authNumber);
-                                            res.send({"status": 1});
+                                            db.any("SELECT memberid FROM Members WHERE email = $1", [email])
+                                                .then(rows => {
+                                                    res.send({"status": 1, "memberId": rows[0].memberid});
+                                                }).catch(() => {res.send({"status": 6});})
                                          })
                                          .catch(() => {
                                             res.send({"status": 6});
