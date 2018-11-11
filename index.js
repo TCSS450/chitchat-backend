@@ -14,6 +14,11 @@ app.use('/password-forgot', require('./routes/password-forgot.js'));
 app.use('/password-change', require('./routes/password-change.js'));
 app.use('/search-members', require('./routes/search-members.js'));
 app.use('/messaging', require('./routes/messaging.js'));
+app.use('/friend-status', require('./routes/friend-status.js'));
+app.use('/send-friend-request', require('./routes/send-friend-request'));
+
+//app.use('/weather', require('./routes/weather.js'));
+
 
 /*
  * Return HTML for the / end point. 
