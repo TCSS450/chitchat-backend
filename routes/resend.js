@@ -17,7 +17,7 @@ router.post('/', (req, res) => {
     if (email) {
         // console.log("email is valid");
         // console.log(email);
-        db.any("SELECT memberid, verification, nickname, phone_number FROM Members WHERE Email = $1", [email])
+        db.any("SELECT memberid, verification, nickname, email, phone_number FROM Members WHERE Email = $1 or nickname = $1", [email])
             .then(rows => {
                 if (rows.length == 1) {
                     // console.log(rows[0]);
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
                     db.any("UPDATE Members SET verification = $1 WHERE memberid = $2", [authNumber, rows[0].memberid])
                             .then(() => { 
                                 // console.log("send email?");
-                                utility.sendEmail(email, authNumber);
+                                utility.sendEmail(rows[0].email, authNumber);
                                 res.send(
                                     {"status": 1, "email": email, 
                                      "nickname": rows[0].nickname, "phone_number": rows[0].phone_number
