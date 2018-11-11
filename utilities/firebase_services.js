@@ -13,7 +13,7 @@ function sendToTopic(msg, from, topic) {
             body: msg,
         },
         data: {
-            "type": "contacrt",
+            "type": "contact",
             "sender": from,
             "message": msg,
         },
@@ -44,7 +44,7 @@ function sendToIndividual(token, msg, from) {
                 icon: '@drawable/ic_menu_manage'
             },
             data: {
-                "type": "contacrt",
+                "type": "contact",
                 "sender": from,
                 "message": msg,
             }
