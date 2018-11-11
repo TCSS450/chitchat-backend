@@ -11,7 +11,7 @@ router.post('/', (req, res) => {
     const inputedNumber = req.body['inputToken'];
     
     if (email && inputedNumber) {
-        db.any("SELECT verification, is_verified, memberid FROM Members WHERE Email = $1", [email])
+        db.any("SELECT verification, is_verified, memberid FROM Members WHERE Email = $1 or nickname = $1", [email])
             .then(rows => {
                 if (rows.length === 1) {
                     if (rows[0].verification != inputedNumber) { // numbers don't match

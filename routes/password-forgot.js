@@ -33,7 +33,7 @@ router.post('/', (req, res) => {
 							.then(() => {
 								console.log("seding email");
 								utility.sendEmail(email, authNumber);
-								res.send({"status": 1}); // password updated 
+								res.send({"status": 1, "email": rows[0].email}); // password updated 
 							}).catch(() => {
 								res.send({"status": 4}); // This should not happen unless server crashes or something
 							})
@@ -64,8 +64,8 @@ Input: Requires JSON containing email and password
 INPUT CONDITIONS:
 User field in json 	
 Sends an email to user email address with verification pin
-Output Response: Returns a JSON object with status condition
-Ex: {“status”: N} 
+Output Response: Returns a JSON object with status condition and email
+Ex: {“status”: N, "email": email} 
 	N can be numbers {1, 2, 3, 4}
 		1- Successful email sent (load LoginForgotPassVerificationFrag -use verify
       endpoint to verify number entered)
