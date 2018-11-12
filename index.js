@@ -16,6 +16,9 @@ app.use('/search-members', require('./routes/search-members.js'));
 app.use('/messaging', require('./routes/messaging.js'));
 app.use('/friend-status', require('./routes/friend-status.js'));
 app.use('/send-friend-request', require('./routes/send-friend-request'));
+app.use('/accept-friend-request', require('./routes/accept-friend-request'));
+app.use('/reject-friend-request', require('./routes/reject-friend-request'));
+
 
 //app.use('/weather', require('./routes/weather.js'));
 
