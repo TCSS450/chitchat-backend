@@ -58,7 +58,7 @@ router.post('/with_token', (req, res) => {
                     } else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);
                         console.log(row);
-                        res.send({"status" : 4});
+                        res.send({"status" : 4, "memberId": row[0].memberid});
                     }
                 }
             })
