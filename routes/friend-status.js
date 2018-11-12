@@ -19,8 +19,6 @@ router.post("/", (req, res) => {
                         res.send({"status": 2});
                     } else if (verified === 2) {
                         res.send({"status": 3});
-                    } else if (verified === 3) {
-                        res.send({"status": 4});
                     } else {res.send({"status": 5})}
                 } else {
                     res.send(defaultReturn);
