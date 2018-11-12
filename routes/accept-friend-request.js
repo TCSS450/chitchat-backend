@@ -18,6 +18,6 @@ router.post("/", (req, res) => {
                         }).catch(() => res.send(defaultReturn))
                 }
             }).catch(() => res.send(defaultReturn))
-    }
+    } else {res.send(defaultReturn)}
 });
 module.exports = router;
