@@ -30,16 +30,20 @@ router.post("/send", (req, res) => {
                         //console.log("GOT HERE");
                         fcm_functions.sendToIndividual(element['token'], message, email);
                     });
+                    console.log("HERE");
                     res.send({
                         success: true
                     });
                 }).catch(err => {
+                    console.log("HERE1");
                     res.send({
                         success: false,
                         error: err,
                     });
                 })
         }).catch((err) => {
+            console.log("HERE2");
+
             res.send({
                 success: false,
                 error: err,
