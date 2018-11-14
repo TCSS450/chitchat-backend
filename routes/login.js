@@ -75,12 +75,12 @@ router.post('/with_token', (req, res) => {
                                     message: err                                   
                                 });
                             })
-                        
-                    } else { // Email or NN exists in DB but unverified account
+                        }  
+                    } /*else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);
                         console.log(row);
                         res.send({"status" : 3, "memberId": row[0].memberid});
-                    }
+                    }*/
                     
                 }
             })
