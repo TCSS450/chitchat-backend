@@ -33,40 +33,35 @@ router.post('/with_token', (req, res) => {
                         let theirSaltedHash = getHash(theirPw, salt); 
                         const wasCorrectPw = ourSaltedHash === theirSaltedHash;
                         console.log(theirPw);
-                        res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
-                        if (wasCorrectPw) {
+                        //res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
+                        
                             
-                            //password and email match. Save the current FB Token
-                            let id = row['memberid'];
-                            let params = [id, token];
-                            db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
-                                .then(row => {
-                                    res.send({
-                                        success: true,
-                                        //"status": 1,
-                                        //"memberId": row[0].memberid,
-                                        message: "Token Saved"
-                                    });
-                                })
-                                .catch(err => {
-                                    console.log("failed on insert");
-                                    console.log(err);
-                                    //If anything happened, it wasn't successful
-                                    res.send({
-                                        success: false,
-                                        message: err
-                                    });
-                                })
-                        } else {
-                            res.send({
-                                "status": 3,
-                                "memberId": row[0].memberid
+                        //password and email match. Save the current FB Token
+                        let id = row['memberid'];
+                        let params = [id, token];
+                        db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
+                            .then(row => {
+                                res.send({
+                                    //success: true,
+                                    "status": (wasCorrectPw) ? 1 : 3,
+                                    "memberId": row[0].memberid
+                                    //message: "Token Saved"
+                                });
                             })
-                        }
+                            .catch(err => {
+                                console.log("failed on insert");
+                                console.log(err);
+                                //If anything happened, it wasn't successful
+                                res.send({
+                                    success: false,
+                                    message: err                                   
+                                });
+                            })
+                        
                     } else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);
                         console.log(row);
-                        res.send({"status" : 4, "memberId": row[0].memberid});
+                        res.send({"status" : 3, "memberId": row[0].memberid});
                     }
                     
                 }
