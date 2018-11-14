@@ -41,10 +41,7 @@ router.post('/with_token', (req, res) => {
                             let params = [id, token];
                             db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
                                 .then(row => {
-                                    res.send({
-                                        success: true,
-                                        message: "Token Saved"
-                                    });
+                                    res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
                                 })
                                 .catch(err => {
                                     console.log("failed on insert");
