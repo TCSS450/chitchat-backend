@@ -37,19 +37,23 @@ router.post('/with_token', (req, res) => {
                         if (wasCorrectPw) {
                             
                             //password and email match. Save the current FB Token
-                            let id = row['memberid'];
+                            console.log(row[0].memberid);
+                            let id = row[0].memberid;
+                            console.log(id);
                             let params = [id, token];
-                            db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
+                            db.any('INSERT INTO FCM_Token (memberid, token) VALUES ($1, $2) ON CONFLICT (memberid) DO UPDATE SET token = $2; ', params)
                                 .then(row => {
+                                    console.log("Here");
                                     res.send({
-                                        success: true,
+                                        //success: true,
                                         "status": 1,
-                                        "memberId": row[0].memberid,
-                                        message: "Token Saved"
+                                        "memberId": id
+                                        //message: "Token Saved"
                                     });
                                 })
                                 .catch(err => {
-                                    console.log("failed on insert");
+                                    console.log("Here2");
+                                    //console.log("failed on insert");
                                     console.log(err);
                                     //If anything happened, it wasn't successful
                                     res.send({
