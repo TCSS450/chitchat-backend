@@ -33,8 +33,9 @@ router.post('/with_token', (req, res) => {
                         let theirSaltedHash = getHash(theirPw, salt); 
                         const wasCorrectPw = ourSaltedHash === theirSaltedHash;
                         console.log(theirPw);
+                        res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
                         if (wasCorrectPw) {
-                            res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
+                            
                             //password and email match. Save the current FB Token
                             let id = row['memberid'];
                             let params = [id, token];
@@ -54,6 +55,7 @@ router.post('/with_token', (req, res) => {
                                         message: err
                                     });
                                 })
+                                res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
                         }
                     } else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);
