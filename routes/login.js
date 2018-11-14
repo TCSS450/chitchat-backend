@@ -33,7 +33,7 @@ router.post('/with_token', (req, res) => {
                         let theirSaltedHash = getHash(theirPw, salt); 
                         const wasCorrectPw = ourSaltedHash === theirSaltedHash;
                         console.log(theirPw);
-                        res.send({"memberId": row[0].memberid});
+                        res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
                         if (wasCorrectPw) {
                             
                             //password and email match. Save the current FB Token
@@ -42,8 +42,8 @@ router.post('/with_token', (req, res) => {
                             db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
                                 .then(row => {
                                     res.send({
-                                        //success: true,
-                                        "status": 1,
+                                        success: true,
+                                        //"status": 1,
                                         //"memberId": row[0].memberid,
                                         message: "Token Saved"
                                     });
