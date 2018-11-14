@@ -59,7 +59,7 @@ router.post('/with_token', (req, res) => {
                         console.log(row);
                         res.send({"status" : 4, "memberId": row[0].memberid});
                     }
-                    res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
+                    //res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
                 }
             })
             .catch(() => {
