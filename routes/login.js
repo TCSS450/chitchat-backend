@@ -35,6 +35,7 @@ router.post('/with_token', (req, res) => {
                         console.log(theirPw);
                         //res.send({"status": (wasCorrectPw) ? 1 : 3, "memberId": row[0].memberid});
                         if (wasCorrectPw) {
+                            
                             //password and email match. Save the current FB Token
                             let id = row['memberid'];
                             let params = [id, token];
@@ -67,6 +68,7 @@ router.post('/with_token', (req, res) => {
                         console.log(row);
                         res.send({"status" : 4, "memberId": row[0].memberid});
                     }
+                    
                 }
             })
             .catch(() => {
