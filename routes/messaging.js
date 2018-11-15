@@ -39,6 +39,7 @@ router.post("/send", (req, res) => {
                     res.send({
                         success: false,
                         error: err,
+                        "status": "Error in option 1"
                     });
                 })
         }).catch((err) => {
@@ -47,6 +48,7 @@ router.post("/send", (req, res) => {
             res.send({
                 success: false,
                 error: err,
+                "status": "Error in option 2"
             });
         });
 });

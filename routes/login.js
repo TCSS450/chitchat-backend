@@ -47,7 +47,7 @@ router.post('/with_token', (req, res) => {
                                     res.send({
                                         //success: true,
                                         "status": 1,
-                                        "memberId": id
+                                        "memberId": id,
                                         //message: "Token Saved"
                                     });
                                 })
@@ -58,7 +58,7 @@ router.post('/with_token', (req, res) => {
                                     //If anything happened, it wasn't successful
                                     res.send({
                                         success: false,
-                                        message: err
+                                        message: err,
                                     });
                                 })
                         } else {
@@ -72,7 +72,8 @@ router.post('/with_token', (req, res) => {
                                 //If anything happened, it wasn't successful
                                 res.send({
                                     success: false,
-                                    message: err                                   
+                                    message: err,    
+                                    "status": "Error in option 2",                             
                                 });
                             })
                         }  
