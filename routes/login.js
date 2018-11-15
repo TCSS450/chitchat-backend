@@ -22,7 +22,7 @@ router.post('/with_token', (req, res) => {
     const token = req.body['token'];
     const theirPw = req.body['password'];
     if (emailNN && theirPw && token) {
-        db.one("SELECT MemberID, Password, Salt, nickname, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
+        db.any("SELECT MemberID, Password, Salt, nickname, is_verified FROM Members WHERE Email=$1 OR Nickname=$1", [emailNN])
             .then(row => { //if query execution is valid
                 if (row.length === 0) { // Email or NN DNE in DB
                     res.send({"status" : 2});
@@ -42,7 +42,7 @@ router.post('/with_token', (req, res) => {
                             let params = [id, token];
                             console.log(row);
 
-                            db.any('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
+                            db.manyOrNone('INSERT INTO FCM_Token (memberId, token) VALUES ($1, $2) ON CONFLICT (memberId) DO UPDATE SET token = $2; ', params)
                                 .then(row => {
                                     console.log("Here");
                                     console.log(row);
