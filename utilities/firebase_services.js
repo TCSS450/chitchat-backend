@@ -28,7 +28,7 @@ function sendToTopic(msg, from, topic) {
             console.log('Successfully sent message:', response);
         })
         .catch((error) => {
-            console.log('Error sending message:', error);
+            console.log('Error sending message 1:', error);
         });
 }
 //use to send message to a specific client by the token
@@ -60,7 +60,7 @@ function sendToIndividual(token, msg, from) {
             console.log('Successfully sent message:', response);
         })
         .catch((error) => {
-            console.log('Error sending message:', error);
+            console.log('Error sending message 2:', error);
         });
 }
 let fcm_functions = { sendToTopic, sendToIndividual };
