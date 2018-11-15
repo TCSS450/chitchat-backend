@@ -70,6 +70,7 @@ router.post('/with_token', (req, res) => {
                                 "status": 3,
                                 "memberId": row[0].memberid
                             })
+                            /*
                             .catch(err => {
                                 console.log("failed on insert");
                                 console.log(err);
@@ -80,6 +81,7 @@ router.post('/with_token', (req, res) => {
                                     "status": "Error in option 2",                             
                                 });
                             })
+                            */
                         }  
                     } /*else { // Email or NN exists in DB but unverified account
                         console.log(row[0].is_verified);

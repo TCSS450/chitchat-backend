@@ -30,7 +30,7 @@ router.post("/send", (req, res) => {
                         //console.log("GOT HERE");
                         fcm_functions.sendToIndividual(element['token'], message, email);
                     });
-                    console.log("HERE");
+                    console.log("The message was succesful");
                     res.send({
                         success: true
                     });
