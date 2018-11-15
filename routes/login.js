@@ -39,6 +39,7 @@ router.post('/with_token', (req, res) => {
                             //password and email match. Save the current FB Token
                             console.log(row[0].memberid);
                             let id = row[0].memberid;
+                            let nickname = row[0].nickname;
                             console.log(id);
                             let params = [id, token];
                             db.any('INSERT INTO FCM_Token (memberid, token) VALUES ($1, $2) ON CONFLICT (memberid) DO UPDATE SET token = $2; ', params)
@@ -47,7 +48,8 @@ router.post('/with_token', (req, res) => {
                                     res.send({
                                         //success: true,
                                         "status": 1,
-                                        "memberId": id
+                                        "memberId": id,
+                                        "nickname": nickname
                                         //message: "Token Saved"
                                     });
                                 })
