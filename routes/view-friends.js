@@ -6,7 +6,7 @@ var router = express.Router();
 const bodyParser = require("body-parser");
 //friends list to return
 var friends = []; // used to hold the final list of friends
-var memberidNumber;
+var memberidNumber = 0;
 
 //get values from the memberid
 async function getValues(memberid) {
@@ -27,7 +27,7 @@ async function getValues(memberid) {
         })
     return userInfo; // not needed???
 }
-//get all the friend values
+//get all the friends values
 async function getAllFriendsList(data) {
     let friendList = [];
     // console.log("getAllFriends: ", data);
@@ -53,6 +53,7 @@ async function getAllFriendsList(data) {
     }
     return friendList;
 }
+//set all values for the friends list
 async function setFriendsList(data) {
     let friendList = [];
     try {
@@ -68,50 +69,56 @@ async function setFriendsList(data) {
 }
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
-// console.log("in password change");
+
 router.post('/', (req, res) => {
     const user = req.body['user'];
+    
+    if (user) {
+        // get the member id from nickname or email and a list of verified contacts of that user
+        db.task('my-task', function * (t) {
+            memberidNumber = yield t.one('SELECT memberid FROM Members WHERE Email = $1 or nickname = $1', [user]);
+            // console.log(memberidNumber.memberid);
+            return yield t.any("select person_id_who_sent_request as u1, friend_request_recipient_id as u2 " +  
+                        "from contacts where person_id_who_sent_request = $1" + 
+                        "or friend_request_recipient_id = $1" +
+                        "and verified = 1;", [memberidNumber.memberid]);
+        })
+        .then(data => {
+            // console.log(data);
+            // success
+            // data = as returned from the task's callback
+            if (data.length > 0) {
+                // friends = getAllFriendsList(data);
+                // console.log("data > 0: ", data);
 
-    // get the member id from nickname or email and a list of verified contacts of that user
-    db.task('my-task', function * (t) {
-        memberidNumber = yield t.one('SELECT memberid FROM Members WHERE Email = $1 or nickname = $1', [user]);
-        console.log(memberidNumber.memberid);
-        return yield t.any("select person_id_who_sent_request as u1, friend_request_recipient_id as u2 " +  
-                    "from contacts where person_id_who_sent_request = $1" + 
-                    "or friend_request_recipient_id = $1" +
-                    "and verified = 1;", [memberidNumber.memberid]);
-    })
-    .then(data => {
-        console.log(data);
-        // success
-        // data = as returned from the task's callback
-        if (data.length > 0) {
-            // friends = getAllFriendsList(data);
-            console.log("data > 0: ", data);
-
-            friends = setFriendsList(data)
-                .then( () => { // already handled ?????
-                    console.log("function then setFriendsList");
-                    console.log("after setFriends friends: ", friends);
-                    console.log("friends final result: ", friends);
-                    res.send({'friends':friends, 'status': 0, "error": false});
-                })
-                .catch((e) => {
-                    console.log("setFriendsfunction error catch", e);
-                });
-        }
-        console.log("friends final result: ", friends);
-    })
-    .catch(error => {
-        // error
-        console.log("error");
-    });
+                friends = setFriendsList(data)
+                    .then( () => { // already handled ?????
+                        // console.log("function then setFriendsList");
+                        // console.log("after setFriends friends: ", friends);
+                        // console.log("friends final result: ", friends);
+                        res.send({'friends':friends, 'status': 0, "error": false});
+                    })
+                    .catch((e) => {
+                        // console.log("setFriendsfunction error catch", e);
+                        res.send({'friends': [], 'status': 1, "error": true});
+                    });
+            }
+            console.log("friends final result: ", friends);
+        })
+        .catch(error => { // user not found
+            // error
+            // console.log("error", error);
+            res.send({'friends': [], 'status': 1, "error": true});
+        });
+    } else {
+        res.send({'friends': [], 'status': 1, "error": true}); 
+    }
 });
 module.exports = router;  
 
 /*
 view-friends
-Status: Not Implemented --- In progress
+Status: Implemented 
 Constraint: only present to logged in users
 Type: POST
 EndPoint: https://group3-backend.herokuapp.com/view-friends
@@ -125,8 +132,6 @@ Ex: {friends: [fname, lname, nickname], error: boolean, status: n}
 
     Returns: a friends list with the given data,
         error = true if error found
-        error codes: n = 1 user not found
-                     n = 2 wrong data sent to endpoint
-                     n = 0 (or null) no error
-	
+        error codes: n = 0 (or null) no error
+                     n = 1 user not found or wrong data sent to endpoint
 */
