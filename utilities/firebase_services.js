@@ -25,7 +25,7 @@ function sendToTopic(msg, from, topic) {
     admin.messaging().send(message)
         .then((response) => {
             // Response is a message ID string.
-            console.log('Successfully sent message:', response);
+            console.log('Successfully sent message 1:', response);
         })
         .catch((error) => {
             console.log('Error sending message 1:', error);
@@ -57,7 +57,7 @@ function sendToIndividual(token, msg, from) {
     admin.messaging().send(message)
         .then((response) => {
             // Response is a message ID string.
-            console.log('Successfully sent message:', response);
+            console.log('Successfully sent message 2:', response);
         })
         .catch((error) => {
             console.log('Error sending message 2:', error);

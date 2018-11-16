@@ -22,6 +22,7 @@ app.use('/view-request-sent-to-me', require('./routes/view-request-sent-to-me'))
 app.use('/view-request-I-sent', require('./routes/view-requests-I-sent'));
 app.use('/view-friends', require('./routes/view-friends.js'));
 
+app.use('/token-test', require('./routes/token-test.js'));
 
 
 
