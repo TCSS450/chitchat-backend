@@ -31,9 +31,9 @@ router.post("/send", (req, res) => {
                         fcm_functions.sendToIndividual(element['token'], message, email);
                     });
                     console.log("The message was succesful");
+                    console.log("The chatID is", chatId);
                     res.send({
-                        success: true,
-                        "status":"It got to here"
+                        success: true
                     });
                 }).catch(err => {
                     console.log("HERE1");
