@@ -56,7 +56,7 @@ module.exports = router;
 
 /*
 ResetPassword  (forgot password)
-Status: Not Implemented
+Status: Implemented
 Type: POST
 EndPoint: https://group3-backend.herokuapp.com/password-reset
 Input: Requires JSON containing email and password

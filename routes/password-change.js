@@ -50,7 +50,7 @@ module.exports = router;
 
 /*
 ChangePassword
-Status: Not Implemented
+Status: Implemented
 Constraint: only present to logged in users
 Type: POST
 EndPoint: https://group3-backend.herokuapp.com/password-change
