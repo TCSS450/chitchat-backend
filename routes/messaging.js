@@ -32,7 +32,8 @@ router.post("/send", (req, res) => {
                     });
                     console.log("The message was succesful");
                     res.send({
-                        success: true
+                        success: true,
+                        "status":"It got to here"
                     });
                 }).catch(err => {
                     console.log("HERE1");
