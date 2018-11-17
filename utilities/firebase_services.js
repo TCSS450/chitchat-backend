@@ -32,7 +32,7 @@ function sendToTopic(msg, from, topic) {
         });
 }
 //use to send message to a specific client by the token
-function sendToIndividual(token, msg, from) {
+function sendToIndividual(token, msg, from, nickname) {
 
     //build the message for FCM to send
     var message = {
@@ -47,6 +47,7 @@ function sendToIndividual(token, msg, from) {
                 "type": "contact",
                 "sender": from,
                 "message": msg,
+                "nickname": nickname
             }
         },
         "token": token
