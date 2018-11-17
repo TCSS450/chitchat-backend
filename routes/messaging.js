@@ -12,11 +12,10 @@ router.post("/send", (req, res) => {
     let email = req.body['email'];
     let message = req.body['message'];
     let chatId = req.body['chatId'];
-    let nickName = req.body['nickname'];
     if (!email || !message || !chatId) {
         res.send({
             success: false,
-            error: "email, message, nickname or chatId not supplied"
+            error: "email, message, or chatId not supplied"
         });
         return;
     }
@@ -29,7 +28,7 @@ router.post("/send", (req, res) => {
                 .then(rows => {
                     rows.forEach(element => {
                         //console.log("GOT HERE");
-                        fcm_functions.sendToIndividual(element['token'], message, email, nickName);
+                        fcm_functions.sendToIndividual(element['token'], message, email);
                     });
                     console.log("The message was succesful");
                     console.log("The chatID is", chatId);
