@@ -61,8 +61,7 @@ router.post("/getAll", (req, res) => {
     db.manyOrNone(query, [chatId])
         .then((rows) => {
             res.send({
-                messages: rows,
-                
+                messages: rows[0]
             })
             console.log(rows.email);
         }).catch((err) => {
