@@ -62,8 +62,8 @@ router.post("/getAll", (req, res) => {
         .then((rows) => {
             res.send({
                 messages: rows,
-                "email": rows["email"],
-                "message": rows["message"]
+                "email": rows[0],
+                "message": rows[1]
             })
             console.log(rows);
         }).catch((err) => {
