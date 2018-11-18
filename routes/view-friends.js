@@ -101,7 +101,7 @@ router.post('/', (req, res) => {
                         res.send({'friends': [], "error": true});
                     });
             } else {
-                res.send({'friends': [], 'status': 1, "error": false});
+                res.send({'friends': [], "error": false});
                 // console.log("friends final result: ", friends);
             }
         })
