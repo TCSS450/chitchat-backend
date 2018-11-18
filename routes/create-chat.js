@@ -9,7 +9,7 @@ router.post("/", (req, res) => {
     let chatid = -1;
     if (chatmembers && chatname) {
         db.any("INSERT INTO Chats (name) VALUES ($1)", [chatname])
-            .then(row => {
+            .then(() => {
                 db.any("SELECT * FROM Chats WHERE chatid = (SELECT MAX(chatid) FROM Chats)")
                     .then(rows => {
                         chatid = rows[0].chatid;
@@ -17,10 +17,10 @@ router.post("/", (req, res) => {
                             db.any("INSERT INTO chatmembers (chatid, memberid) VALUES ($1, $2)", [chatid, chatmembers[i]])
                                 .then(() => {
                                     if (i + 1 === chatmembers.length) {res.send({"status": 1, "chatid": chatid})}
-                                }).catch(() => res.send("error"))
+                                }).catch(() => res.send(defaultReturn))
                         }
-                    }).catch(() => {res.send("errow 2")})
-            }).catch(() => {res.send("errow 3")})
+                    }).catch(() => {res.send(defaultReturn)})
+            }).catch(() => {res.send(defaultReturn)})
     } else { res.send(defaultReturn)}
 })
     
