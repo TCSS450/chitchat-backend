@@ -20,7 +20,8 @@ async function getValues(memberid) {
                 "lastname": row[0].lastname,
                 "nickname": row[0].nickname,
                 "email": row[0].email,
-                "phone": row[0].phone_number
+                "phone": row[0].phone_number,
+                "memberid": row[0].memberid
             };
             // console.log("getValues userInfor: ", userInfo);
             return userInfo;
