@@ -10,15 +10,17 @@ var memberidNumber = 0;
 
 //get values from the memberid
 async function getValues(memberid) {
-    let userInfo = []
-    // console.log("getValues mebid: ", memberid);
-    userInfo = await db.any("SELECT firstname, lastname, nickname FROM Members WHERE memberid = $1", [memberid])
+    let userInfo;
+    console.log("getValues mebid: ", memberid);
+    userInfo = await db.any("SELECT * FROM Members WHERE memberid = $1", [memberid])
         .then(row => {
             // console.log("getValues row: ", row);
-            userInfo.push(row[0].firstname);
-            userInfo.push(row[0].lastname);
-            userInfo.push(row[0].nickname);
-            // friends.push(userInfo);
+            userInfo = {
+                "firstname": row[0].firstname,
+                "lastname": row[0].lastname,
+                "email": row[0].email,
+                "phone": row[0].phone_number
+            };
             // console.log("getValues userInfor: ", userInfo);
             return userInfo;
         })
@@ -35,17 +37,13 @@ async function getAllFriendsList(data) {
         // console.log("user ids: ", data[i].u1, data[i].u2, memberidNumber.memberid);
         if (data[i].u1 == memberidNumber.memberid) {
             try {
-                // console.log("get all friends before push call 1", friendList);
                 friendList.push(await getValues(data[i].u2));
-                // console.log("friends after push call 1", friendList);
             } catch (e) {
                 console.log("getAllFriendsList error", e);
             } 
         } else if (data[i].u2 == memberidNumber.memberid) {
             try {
-                // console.log("get all friends before push call 2", friendList);
                 friendList.push(await getValues(data[i].u1));
-                // console.log("friends after push call 2", friendList);
             } catch (e) {
                 console.log("getAllFriendsList error", e);
             } 
@@ -79,12 +77,12 @@ router.post('/', (req, res) => {
             memberidNumber = yield t.one('SELECT memberid FROM Members WHERE Email = $1 or nickname = $1', [user]);
             // console.log(memberidNumber.memberid);
             return yield t.any("select person_id_who_sent_request as u1, friend_request_recipient_id as u2 " +  
-                        "from contacts where person_id_who_sent_request = $1" + 
-                        "or friend_request_recipient_id = $1" +
-                        "and verified = 1;", [memberidNumber.memberid]);
+                        "from contacts where verified = 1 and ( " +
+                        "person_id_who_sent_request = $1 " + 
+                        "or friend_request_recipient_id = $1 )", [memberidNumber.memberid]);
         })
         .then(data => {
-            // console.log(data);
+            // console.log(data.length);
             // success
             // data = as returned from the task's callback
             if (data.length > 0) {
@@ -96,22 +94,24 @@ router.post('/', (req, res) => {
                         // console.log("function then setFriendsList");
                         // console.log("after setFriends friends: ", friends);
                         // console.log("friends final result: ", friends);
-                        res.send({'friends':friends, 'status': 0, "error": false});
+                        res.send({'friends':friends, "error": false});
                     })
                     .catch((e) => {
                         // console.log("setFriendsfunction error catch", e);
-                        res.send({'friends': [], 'status': 1, "error": true});
+                        res.send({'friends': [], "error": true});
                     });
+            } else {
+                res.send({'friends': [], "error": false});
+                // console.log("friends final result: ", friends);
             }
-            console.log("friends final result: ", friends);
         })
         .catch(error => { // user not found
             // error
             // console.log("error", error);
-            res.send({'friends': [], 'status': 1, "error": true});
+            res.send({'friends': [], "error": true});
         });
     } else {
-        res.send({'friends': [], 'status': 1, "error": true}); 
+        res.send({'friends': [], "error": true}); 
     }
 });
 module.exports = router;  
@@ -128,10 +128,9 @@ INPUT CONDITIONS:
 User field in json 
 Email or nickname is a verified user
 Output Response: Returns a JSON object list of user friends and boolean
-Ex: {friends: [fname, lname, nickname], error: boolean, status: n} 
+Ex: {friends: [friendObject], error: boolean} 
+    friendObject: {"first" : firstname, "last": lastname, "email": email, "phone": phone}
 
-    Returns: a friends list with the given data,
+    Returns: a friends list of objects with the given data,
         error = true if error found
-        error codes: n = 0 (or null) no error
-                     n = 1 user not found or wrong data sent to endpoint
 */
