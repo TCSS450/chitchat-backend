@@ -18,6 +18,7 @@ async function getValues(memberid) {
             userInfo = {
                 "firstname": row[0].firstname,
                 "lastname": row[0].lastname,
+                "nickname": row[0].nickname,
                 "email": row[0].email,
                 "phone": row[0].phone_number
             };
