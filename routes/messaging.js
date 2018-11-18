@@ -60,13 +60,13 @@ router.post("/getAll", (req, res) => {
     let query = `SELECT Members.Email, Messages.Message, to_char(Messages.Timestamp AT TIME ZONE 'PDT', 'YYYY-MM-DD HH24:MI:SS.US' ) AS Timestamp FROM Messages INNER JOIN Members ON Messages.MemberId=Members.MemberId WHERE ChatId=$1 ORDER BY Timestamp DESC`
     db.manyOrNone(query, [chatId])
         .then((rows) => {
-            for(let i; i <100; i++){
+            for(let i = 0; i <100; i++){
                 result.push(rows[i].email)
             }
             res.send({
                 messages: result
             })
-            console.log(rows);
+            console.log(result);
         }).catch((err) => {
             res.send({
                 success: false,
