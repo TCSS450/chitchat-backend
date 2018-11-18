@@ -56,20 +56,17 @@ router.post("/send", (req, res) => {
 //Get all of the messages from a chat session with id chatid
 router.post("/getAll", (req, res) => {
     let chatId = req.body['chatId'];
-    let nickname = req.body['nickname']
-    let nicknameList = "";
-    let query = `SELECT Members.Email, Messages.Message, Members.Nickname, to_char(Messages.Timestamp AT TIME ZONE 'PDT', 'YYYY-MM-DD HH24:MI:SS.US' ) AS Timestamp FROM Messages INNER JOIN Members ON Messages.MemberId=Members.MemberId WHERE ChatId=$1 ORDER BY Timestamp DESC`
+    let result = "";
+    let query = `SELECT Members.Email, Messages.Message, to_char(Messages.Timestamp AT TIME ZONE 'PDT', 'YYYY-MM-DD HH24:MI:SS.US' ) AS Timestamp FROM Messages INNER JOIN Members ON Messages.MemberId=Members.MemberId WHERE ChatId=$1 ORDER BY Timestamp DESC`
     db.manyOrNone(query, [chatId])
         .then((rows) => {
             for(let i = 0; i <100; i++){
                 result += ("\n" + rows[i].email + ": " + rows[i].message + "\n\n")
-                nicknameList += (rows[i].nickname)
             }
             res.send({
-                messages: result,
-                "nicknames": nicknameList
+                messages: result
             })
-            console.log(nicknameList);
+            console.log(result);
         }).catch((err) => {
             res.send({
                 success: false,
