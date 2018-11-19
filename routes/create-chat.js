@@ -81,16 +81,14 @@ router.post("/", (req, res) => {
                         console.log("# common chat id's " + rows.length);
                         var getMemberIdsForEachCommonChat = async () => {
                             for (let i = 0; i < rows.length; i++) {
-                            
                                 let template = {"chatid": rows[i].chatid, "members": []};
                                 await db.any("SELECT * FROM chatmembers WHERE chatid = $1", template.chatid)
                                     .then(members => {
                                         for (let j = 0; j < members.length; j++) {
                                             template.members.push(members[j].memberid);
                                         }
-                                    console.log("end inner loop");
                                     chats_with_member_id.push(template);
-                                }).catch(() => res.send(defaultReturn)); 
+                                }).catch(() => {res.send(defaultReturn)})
                             }
                         }
                         getMemberIdsForEachCommonChat()
@@ -105,12 +103,12 @@ router.post("/", (req, res) => {
                                         }
                                     }
                                 }
-                                if (!sent) {
+                                /*if (!sent) {
                                     makeNewChat(chatname, defaultReturn, res, chatmembers);
-                                }
+                                }*/
                             });
                     }
-                }).catch(res.send(defaultReturn))
+                }).catch((error) => console.log(error))
     }
 })  
 module.exports = router;
