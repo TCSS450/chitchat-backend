@@ -31,10 +31,21 @@ function getSenderStringByDisplayType(senderId) {
 }
 
 function utilityGetTokenForRecipient(recipientId) {
-    db.any("SELECT * FROM FCM_Token WHERE memberid = $1", [recipientId])
+    console.log("In method?");
+    var result = -1;
+    var getToken = async () => {
+        await db.any("SELECT * FROM FCM_Token WHERE memberid = $1", [recipientId])
         .then(row => {
-            return row[0].token;
-        }).catch(() => {return -1})
+            console.log("in then");
+            console.log(row);
+            console.log(row[0].token);
+            result = row[0].token;
+        }).catch(() => {result = -1})
+    }
+    getToken()
+        .then(() => {
+            return result;
+        })
 }
 
 function sendEmail(receiver, verificationCode) {

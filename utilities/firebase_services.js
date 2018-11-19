@@ -1,6 +1,6 @@
 var admin = require('firebase-admin');
 var serviceAccount = require("./chitchat-fcm-group3-firebase-adminsdk-swjxf-05a80c87aa.json");
-let utility = require('./utils').getSenderStringByDisplayType;
+let utility = require('./utils');
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://lab5-fcm-cfb3.firebaseio.com'
@@ -63,12 +63,8 @@ function sendNotificationFriendRequest(senderString, token) {
     }
 }
 
-
-function sendToIndividual(token, msg, from, chatId) {
-
-    //build the message for FCM to send
-    console.log(chatId);
-    var message = {
+ function getChatNotificationMessage(from, msg, chatId, token) {
+     return {
         android: {
             notification: {
                 title: 'New Message from '.concat(from),
@@ -85,7 +81,64 @@ function sendToIndividual(token, msg, from, chatId) {
             }
         },
         "token": token
-    };
+     }
+ }
+
+ function getFriendRequestSent(senderId, token) {
+    let senderString = utility.getSenderStringByDisplayType(senderId);
+    console.log(senderString);
+     return {
+        android: {
+            notification: {
+                title: 'New Request from '.concat(senderString),
+                body: senderString + ' sent you a friend request!',
+                color: "#0000FF",
+                icon: '@drawable/requests'
+            },
+            data: {
+
+            }
+        },
+        "token": token
+     };
+     
+ }
+
+function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif) {
+
+    //chatNotif = [message, email, chatId]
+    //friendSendNotif = [senderMemberId]
+
+    //message from, chatId -- chat notification
+    //build the message for FCM to send
+    //console.log(chatId);
+    //var message = null;
+    if (friendSentNotif === null && friendAcceptedNotif === null) {
+        message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
+    } else if (chatNotif === null && friendAcceptedNotif === null) {
+        message = getFriendRequestSent(friendSentNotif[0], token);
+    }
+    
+
+
+    /*var message = {
+        android: {
+            notification: {
+                title: 'New Message from '.concat(from),
+                body: msg,
+                color: "#0000FF",
+                icon: '@drawable/requests'
+            },
+            data: {
+                "type": "contact",
+                "sender": from,
+                "message": msg,
+                "chatId": ''+chatId
+
+            }
+        },
+        "token": token
+    };*/
     console.log(message);
     // Send a message to the device corresponding to the provided
     // registration token.
