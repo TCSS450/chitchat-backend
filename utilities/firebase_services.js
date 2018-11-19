@@ -96,7 +96,7 @@ function sendNotificationFriendRequest(senderString, token) {
                 icon: '@drawable/requests'
             },
             data: {
-
+                "type": "sent"
             }
         },
         "token": token
@@ -114,6 +114,7 @@ function sendNotificationFriendRequest(senderString, token) {
                 icon: '@drawable/requests'
             },
             data: {
+                "type": "accepted"
             }
         },
         "token": token
