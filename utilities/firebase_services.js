@@ -104,43 +104,32 @@ function sendNotificationFriendRequest(senderString, token) {
      
  }
 
-function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif) {
-
-    //chatNotif = [message, email, chatId]
-    //friendSendNotif = [senderMemberId]
-
-    //message from, chatId -- chat notification
-    //build the message for FCM to send
-    //console.log(chatId);
-    //var message = null;
-    console.log(token);
-    //console.log(chatNotif[0]);
-    if (friendSentNotif === null && friendAcceptedNotif === null) {
-        message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
-    } else if (chatNotif === null && friendAcceptedNotif === null) {
-        message = getFriendRequestSent(friendSentNotif[0], token);
-    }
-    
-
-
-    /*var message = {
+ function getFriendRequestAccepted(senderString, token) {
+    return {
         android: {
             notification: {
-                title: 'New Message from '.concat(from),
-                body: msg,
+                title: 'Friend Request Accepted!',
+                body: senderString + ' accepted your friend request!',
                 color: "#0000FF",
                 icon: '@drawable/requests'
             },
             data: {
-                "type": "contact",
-                "sender": from,
-                "message": msg,
-                "chatId": ''+chatId
-
             }
         },
         "token": token
-    };*/
+     };
+ }
+
+function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif) {
+
+    if (friendSentNotif === null && friendAcceptedNotif === null) {
+        message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
+    } else if (chatNotif === null && friendAcceptedNotif === null) {
+        message = getFriendRequestSent(friendSentNotif[0], token);
+    } else if (chatNotif === null && friendSentNotif === null) {
+        message = getFriendRequestAccepted(friendAcceptedNotif[0], token);
+    }
+
     console.log(message);
     // Send a message to the device corresponding to the provided
     // registration token.

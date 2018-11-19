@@ -38,9 +38,10 @@ router.post("/", (req, res) => {
                                             }
                                                 console.log(displayString, "display string");
                                                 fcm_functions.sendToIndividual(token, null, [displayString], null);
+                                                res.send({"status": 1});
+
                                         }).catch((err) => {console.log(err)})
                                 }).catch((err) => {console.log(err)})
-                            res.send({"status": 1});
                         }).catch(() => {res.send("here0")});
                 } else {res.send("here")}
             }).catch(() => {res.send("here2")})

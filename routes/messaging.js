@@ -29,13 +29,6 @@ router.post("/send", (req, res) => {
                     for (let i = 0; i < rows.length; i++) {
                         fcm_functions.sendToIndividual(rows[0].token, [message, email, chatId], null, null);
                     }
-                    /*rows.forEach(element => {
-                        //console.log("GOT HERE");
-                        console.log(chatId);
-                        fcm_functions.sendToIndividual(element['token'], [message, email, chatId], null, null);
-                    });*/
-                    console.log("The message was succesful");
-                    console.log("The chatID is", chatId);
                     res.send({
                         success: true
                     });
