@@ -103,9 +103,9 @@ router.post("/", (req, res) => {
                                         }
                                     }
                                 }
-                                /*if (!sent) {
+                                if (!sent) {
                                     makeNewChat(chatname, defaultReturn, res, chatmembers);
-                                }*/
+                                }
                             });
                     }
                 }).catch((error) => console.log(error))
