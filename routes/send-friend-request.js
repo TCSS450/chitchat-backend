@@ -22,11 +22,24 @@ router.post("/", (req, res) => {
                             console.log("Before the send notification!");
                             db.any("SELECT * FROM FCM_Token WHERE memberid = $1", [userB])
                                 .then(row => {
-                                    //result = row[0].token;
+                                    let token = row[0].token;
                                     console.log("in then part");
-                                    fcm_functions.sendToIndividual(row[0].token, null, [userA], null);
-                                }).catch(() => {console.log("here-1")})
-                            //fcm_functions.sendToIndividual(utils.utilityGetTokenForRecipient(userB), null, [userA], null);
+                                    //fcm_functions.sendToIndividual(token, null, [userA], null);
+                                    db.any("SELECT * FROM Members WHERE memberid = $1", [userA])
+                                        .then(rows => {
+                                            console.log("final then");
+                                            let displayString = '';
+                                            if (rows[0].display_type === 1) { // nickname
+                                                displayString = rows[0].nickname;
+                                            } else if (rows[0].display_type === 2) { // full name
+                                                displayString = rows[0].firstname + " " + rows[0].lastname;
+                                            } else { // email
+                                                displayString= rows[0].email;
+                                            }
+                                                console.log(displayString, "display string");
+                                                fcm_functions.sendToIndividual(token, null, [displayString], null);
+                                        }).catch((err) => {console.log(err)})
+                                }).catch((err) => {console.log(err)})
                             res.send({"status": 1});
                         }).catch(() => {res.send("here0")});
                 } else {res.send("here")}

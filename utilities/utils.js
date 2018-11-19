@@ -17,8 +17,10 @@ function isEmailValid(email) {
 }
 
 function getSenderStringByDisplayType(senderId) {
+    
     console.log("display type extract method");
-    db.any("SELECT * Members WHERE memberid = $1", [senderId])
+
+    db.any("SELECT * FROM Members WHERE memberid = $1", [senderId])
         .then(rows => {
             if (rows[0].display_type === 1) { // nickname
                 return rows[0].nickname;

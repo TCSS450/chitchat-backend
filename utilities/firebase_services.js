@@ -1,6 +1,6 @@
 var admin = require('firebase-admin');
 var serviceAccount = require("./chitchat-fcm-group3-firebase-adminsdk-swjxf-05a80c87aa.json");
-let utility = require('./utils');
+let getDisplayType = require('./utils').getSenderStringByDisplayType;
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://lab5-fcm-cfb3.firebaseio.com'
@@ -84,9 +84,9 @@ function sendNotificationFriendRequest(senderString, token) {
      }
  }
 
- function getFriendRequestSent(senderId, token) {
-    let senderString = utility.getSenderStringByDisplayType(senderId);
-    console.log(senderString);
+ function getFriendRequestSent(senderString, token) {
+     console.log("in getFreindRequestSent method");
+    console.log(senderString, 'senderString');
      return {
         android: {
             notification: {
@@ -114,6 +114,7 @@ function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif
     //console.log(chatId);
     //var message = null;
     console.log(token);
+    console.log(friendSentNotif[0]);
     if (friendSentNotif === null && friendAcceptedNotif === null) {
         message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
     } else if (chatNotif === null && friendAcceptedNotif === null) {
