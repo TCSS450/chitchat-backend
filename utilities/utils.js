@@ -36,14 +36,13 @@ function utilityGetTokenForRecipient(recipientId) {
     var getToken = async () => {
         await db.any("SELECT * FROM FCM_Token WHERE memberid = $1", [recipientId])
         .then(row => {
-            console.log("in then");
-            console.log(row);
-            console.log(row[0].token);
+            console.log('in then');
             result = row[0].token;
         }).catch(() => {result = -1})
     }
     getToken()
         .then(() => {
+            console.log("before return");
             return result;
         })
 }

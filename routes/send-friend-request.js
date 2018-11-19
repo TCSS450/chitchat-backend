@@ -20,13 +20,13 @@ router.post("/", (req, res) => {
                         ($1, $2, $3)`, [userA, userB, 2])
                         .then(() => {
                             console.log("Before the send notification!");
-                            //let senderString = utils.getSenderStringByDisplayType(userA);
-                            //let token = utils.utilityGetTokenForRecipient(userB);
-                            //fcm_functions.sendNotificationFriendRequest(senderString, token);
-                            console.log("here!");
-                            console.log(userB);
-                            console.log(utilityGetTokenForRecipient(userB));
-                            fcm_functions.sendToIndividual(utils.utilityGetTokenForRecipient(userB), null, [userA], null)
+                            db.any("SELECT * FROM FCM_Token WHERE memberid = $1", [userB])
+                                .then(row => {
+                                    //result = row[0].token;
+                                    console.log("in then part");
+                                    fcm_functions.sendToIndividual(row[0].token, null, [userA], null);
+                                }).catch(() => {console.log("here-1")})
+                            //fcm_functions.sendToIndividual(utils.utilityGetTokenForRecipient(userB), null, [userA], null);
                             res.send({"status": 1});
                         }).catch(() => {res.send("here0")});
                 } else {res.send("here")}

@@ -113,6 +113,7 @@ function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif
     //build the message for FCM to send
     //console.log(chatId);
     //var message = null;
+    console.log(token);
     if (friendSentNotif === null && friendAcceptedNotif === null) {
         message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
     } else if (chatNotif === null && friendAcceptedNotif === null) {
