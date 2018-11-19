@@ -64,9 +64,10 @@ function sendNotificationFriendRequest(senderString, token) {
 }
 
 
-function sendToIndividual(token, msg, from) {
+function sendToIndividual(token, msg, from, chatId) {
 
     //build the message for FCM to send
+    console.log(chatId);
     var message = {
         android: {
             notification: {
@@ -78,7 +79,9 @@ function sendToIndividual(token, msg, from) {
             data: {
                 "type": "contact",
                 "sender": from,
-                "message": msg
+                "message": msg,
+                "chatId": ''+chatId
+
             }
         },
         "token": token

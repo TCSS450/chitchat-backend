@@ -28,7 +28,8 @@ router.post("/send", (req, res) => {
                 .then(rows => {
                     rows.forEach(element => {
                         //console.log("GOT HERE");
-                        fcm_functions.sendToIndividual(element['token'], message, email);
+                        console.log(chatId);
+                        fcm_functions.sendToIndividual(element['token'], message, email, chatId);
                     });
                     console.log("The message was succesful");
                     console.log("The chatID is", chatId);
@@ -36,7 +37,7 @@ router.post("/send", (req, res) => {
                         success: true
                     });
                 }).catch(err => {
-                    console.log("HERE1");
+                    console.log(err);
                     res.send({
                         success: false,
                         error: err,
