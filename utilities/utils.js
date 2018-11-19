@@ -16,6 +16,27 @@ function isEmailValid(email) {
     return validator.isEmail(email);
 }
 
+function getSenderStringByDisplayType(senderId) {
+    console.log("display type extract method");
+    db.any("SELECT * Members WHERE memberid = $1", [senderId])
+        .then(rows => {
+            if (rows[0].display_type === 1) { // nickname
+                return rows[0].nickname;
+            } else if (rows[0].display_type === 2) { // full name
+                return rows[0].firstname + " " + rows[0].lastname;
+            } else { // email
+                return rows[0].email;
+            }
+        }).catch(() => {return -1})
+}
+
+function utilityGetTokenForRecipient(recipientId) {
+    db.any("SELECT * FROM FCM_Token WHERE memberid = $1", [recipientId])
+        .then(row => {
+            return row[0].token;
+        }).catch(() => {return -1})
+}
+
 function sendEmail(receiver, verificationCode) {
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -54,5 +75,5 @@ function getHash(pw, salt) {
 
 
 module.exports = { 
-    db, getHash, sendEmail, isEmailValid, admin, fcm_functions
+    db, getHash, sendEmail, isEmailValid, admin, fcm_functions, getSenderStringByDisplayType, utilityGetTokenForRecipient
 };

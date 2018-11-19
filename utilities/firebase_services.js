@@ -1,5 +1,6 @@
 var admin = require('firebase-admin');
 var serviceAccount = require("./chitchat-fcm-group3-firebase-adminsdk-swjxf-05a80c87aa.json");
+let utility = require('./utils').getSenderStringByDisplayType;
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: 'https://lab5-fcm-cfb3.firebaseio.com'
@@ -32,6 +33,37 @@ function sendToTopic(msg, from, topic) {
         });
 }
 //use to send message to a specific client by the token
+
+function sendNotificationFriendRequest(senderString, token) {
+    console.log("entered the method!");
+
+    if (senderString !== -1 || token !== -1) {
+        var message = {
+            android: {
+                notification: {
+                    title: 'Incoming friend request!',
+                    body: senderString + ' sent you a friend request',
+                    color: "#32CD32",
+                    icon: '@drawable/requests'
+                },
+                data: {}
+            },
+            "token": token
+        }
+        admin.messaging().send(message)
+        .then((response) => {
+            // Response is a message ID string.
+            console.log('Successfully sent message 2:', response);
+        })
+        .catch((error) => {
+            console.log('Error sending message 2:', error);
+        });
+    } else {
+        console.log("ERROR!!!");
+    }
+}
+
+
 function sendToIndividual(token, msg, from) {
 
     //build the message for FCM to send
@@ -63,7 +95,7 @@ function sendToIndividual(token, msg, from) {
             console.log('Error sending message 2:', error);
         });
 }
-let fcm_functions = { sendToTopic, sendToIndividual };
+let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest };
 module.exports = {
     admin, fcm_functions
 };

@@ -8,6 +8,8 @@ router.post("/", (req, res) => {
     const chatname = req.body['chatname'];
     let chatid = -1;
     if (chatmembers && chatname) {
+
+        // want to do this if a chat doesn't exist with the current chat members
         db.any("INSERT INTO Chats (name) VALUES ($1)", [chatname])
             .then(() => {
                 db.any("SELECT * FROM Chats WHERE chatid = (SELECT MAX(chatid) FROM Chats)")
@@ -22,6 +24,5 @@ router.post("/", (req, res) => {
                     }).catch(() => {res.send(defaultReturn)})
             }).catch(() => {res.send(defaultReturn)})
     } else { res.send(defaultReturn)}
-})
-    
+})  
 module.exports = router;
