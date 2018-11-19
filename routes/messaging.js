@@ -26,11 +26,14 @@ router.post("/send", (req, res) => {
             //send a notification of this message to ALL members with registered tokens
             db.manyOrNone('SELECT M.memberid, F.token FROM FCM_Token F, Members M, Chatmembers C WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1', [chatId])
                 .then(rows => {
-                    rows.forEach(element => {
+                    for (let i = 0; i < rows.length; i++) {
+                        fcm_functions.sendToIndividual(rows[0].token, [message, email, chatId], null, null);
+                    }
+                    /*rows.forEach(element => {
                         //console.log("GOT HERE");
                         console.log(chatId);
                         fcm_functions.sendToIndividual(element['token'], [message, email, chatId], null, null);
-                    });
+                    });*/
                     console.log("The message was succesful");
                     console.log("The chatID is", chatId);
                     res.send({

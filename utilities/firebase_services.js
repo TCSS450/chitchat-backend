@@ -114,7 +114,7 @@ function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif
     //console.log(chatId);
     //var message = null;
     console.log(token);
-    console.log(friendSentNotif[0]);
+    //console.log(chatNotif[0]);
     if (friendSentNotif === null && friendAcceptedNotif === null) {
         message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
     } else if (chatNotif === null && friendAcceptedNotif === null) {
