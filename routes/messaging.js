@@ -24,7 +24,7 @@ router.post("/send", (req, res) => {
     db.none(insert, [chatId, message, email])
         .then(() => {
             //send a notification of this message to ALL members with registered tokens
-            db.manyOrNone('SELECT M.memberid, F.token FROM FCM_Token F, Members M, Chatmembers C WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = chatId')
+            db.manyOrNone('SELECT M.memberid, F.token FROM FCM_Token F, Members M, Chatmembers C WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1', [chatId])
                 .then(rows => {
                     rows.forEach(element => {
                         //console.log("GOT HERE");
