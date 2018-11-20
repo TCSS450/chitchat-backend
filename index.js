@@ -30,6 +30,7 @@ app.use('/token-test', require('./routes/token-test.js'));
 
 
 //app.use('/weather', require('./routes/weather.js'));
+//app.use('/weather-today', require('./routes/weather-today.js'));
 
 
 /*
