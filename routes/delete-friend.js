@@ -14,8 +14,8 @@ router.post('/', (req, res) => {
 
     if (userA && userB) {
         db.any("DELETE FROM Contacts " +
-               "WHERE person_id_who_sent_request = $1 " +
-               "AND friend_request_recipient_id = $2", [userA, userB])
+               "WHERE (person_id_who_sent_request = $1 or person_id_who_sent_request = $2) " +
+               "AND (friend_request_recipient_id = $2 or friend_request_recipient_id = $1)", [userA, userB])
             .then(row => {
                 res.send({"status": 1});
                 console.log("deleted friend");
