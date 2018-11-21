@@ -26,7 +26,6 @@ app.use('/delete-friend', require('./routes/delete-friend.js'));
 
 app.use('/token-test', require('./routes/token-test.js'));
 
-
 app.use('/weather', require('./routes/weather.js'));
 
 
