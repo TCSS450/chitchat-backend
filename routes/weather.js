@@ -11,7 +11,7 @@ const bodyParser = require("body-parser");
 //This allows parsing of the body of POST requests, that are encoded in JSON
 router.use(bodyParser.json());
 /**
- * Get the weather for the past 10 days.
+ * Get the weather for the past n days.
  * app.../weather
  * input: {lat: lattitude, lon: longitude, days: n} where 0 < n < 17
  * output: {weather: [data for n days of weather], success: boolean}
