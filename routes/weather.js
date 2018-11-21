@@ -17,7 +17,7 @@ router.use(bodyParser.json());
  * output: {weather: [data for n days of weather], success: boolean}
  */
 const days = 10;
-router.get('/', (req, res) => {
+router.post('/', (req, res) => {
     const lat = req.body['lat'];
     const lon = req.body['lon'];
     const days = req.body['days'];
