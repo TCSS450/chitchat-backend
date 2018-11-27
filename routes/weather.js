@@ -1,4 +1,4 @@
-// weatherbit.io API KEY : 664bd258dd834025a742c18a03ddd8d6
+
 const API_KEY = process.env.WEATHER_API;
 
 //express is the framework we're going to use to handle requests

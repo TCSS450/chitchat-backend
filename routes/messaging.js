@@ -53,12 +53,23 @@ router.post("/send", (req, res) => {
 //Get all of the messages from a chat session with id chatid
 router.post("/getAll", (req, res) => {
     let chatId = req.body['chatId'];
-    let result = "";
-    let query = `SELECT Members.Email, Messages.Message, to_char(Messages.Timestamp AT TIME ZONE 'PDT', 'YYYY-MM-DD HH24:MI:SS.US' ) AS Timestamp FROM Messages INNER JOIN Members ON Messages.MemberId=Members.MemberId WHERE ChatId=$1 ORDER BY Timestamp DESC`
+    let result = [];
+    let query = `SELECT Members.nickname, Members.firstname, Members.lastname, Members.Email, Members.display_type, 
+        Messages.Message, to_char(Messages.Timestamp AT TIME ZONE 'PDT', 'YYYY-MM-DD HH24:MI:SS.US' ) AS Timestamp FROM Messages 
+        INNER JOIN Members ON Messages.MemberId=Members.MemberId WHERE ChatId=$1 ORDER BY Timestamp DESC`
     db.manyOrNone(query, [chatId])
         .then((rows) => {
-            for(let i = 0; i <rows.length; i++){
-                result += ("\n" + rows[i].email + ": " + rows[i].message + "\n\n")
+            for(let i = 0; i < rows.length; i++){
+                temp = {
+                    "nickname": rows[i].nickname,
+                    "firstname": rows[i].firstname,
+                    "lastname": rows[i].lastname,
+                    "email": rows[i].email,
+                    "message": rows[i].message,
+                    "timestamp": rows[i].timestamp,
+                    "display_type": rows[i].display_type
+                };
+                result.push(temp);
             }
             res.send({
                 messages: result
