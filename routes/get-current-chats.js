@@ -10,7 +10,8 @@ router.use(bodyParser.json());
 router.post('/', (req, res) => {
     const member = req.body['memberid'];
     const defaultReturn = {"status": 2};
-    db.any("SELECT chatid FROM chatmembers WHERE memberid = $1", [member])
+    if (member) {
+        db.any("SELECT chatid FROM chatmembers WHERE memberid = $1", [member])
         .then(rows => {
             let chatDetails = [];
             for (let i = 0; i < rows.length; i++) {
@@ -36,5 +37,8 @@ router.post('/', (req, res) => {
                     res.send({"status": 1, "chatDetails": chatDetails});
                 }).catch(() => res.send(defaultReturn))
         }).catch(() => res.send(defaultReturn))
+    } else {
+        res.send(defaultReturn);
+    }
 });
 module.exports = router;
