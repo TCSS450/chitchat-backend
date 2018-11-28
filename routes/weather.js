@@ -39,4 +39,25 @@ router.post('/', (req, res) => {
     }
 });
 
+router.post('/24hour', (req, res) => {
+    const lat = req.body['lat'];
+    const lon = req.body['lon'];
+    if (lat && lon) {
+        let url = `https://api.weatherbit.io/v2.0/forecast/hourly?lat=${lat}&lon=${lon}&units=I&hours=24&key=${API_KEY}`;
+
+        //When this web service gets a request, make a request to the Weather Web service
+        request(url, function (error, response, body) {
+            if (error) {
+                res.send(error);
+            } else {
+                // parse out the weather data for today
+                let weather = JSON.parse(body);
+                res.send({"weather":weather.data, "success": true});
+            }
+        }); 
+    } else { // did not supply right parameters
+        res.send({"success": false});
+    }
+});
+
 module.exports = router;
