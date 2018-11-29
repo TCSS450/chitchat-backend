@@ -15,7 +15,7 @@ router.post("/", (req, res) => {
                     res.send({"status": 1});
                 } else if (rows.length === 1) {
                     const verified = rows[0].verified;
-                    if (verified === 1) {
+                    if (verified === 1) { // already friends
                         res.send({"status": 2});
                     } else if (verified === 2) {
                         res.send({"status": 3});
@@ -23,6 +23,7 @@ router.post("/", (req, res) => {
                 } else {
                     res.send(defaultReturn);
                 }
+                /* DB 1 = not Friends, 2 = already Friends, 3 = pending approval from user b*/
             }).catch(() => {res.send(defaultReturn)})
     } else { res.send(defaultReturn)}
 })
