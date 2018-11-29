@@ -23,7 +23,8 @@ router.post("/", (req, res) => {
                 } else {
                     res.send(defaultReturn);
                 }
-                /* DB 1 = not Friends, 2 = already Friends, 3 = pending approval from user b*/
+                // 1 -> friends, 2 - User A Sent User B but User B has not responed
+                // Verified column number representation
             }).catch(() => {res.send(defaultReturn)})
     } else { res.send(defaultReturn)}
 })

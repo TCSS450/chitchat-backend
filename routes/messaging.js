@@ -24,10 +24,24 @@ router.post("/send", (req, res) => {
     db.none(insert, [chatId, message, email])
         .then(() => {
             //send a notification of this message to ALL members with registered tokens
-            db.manyOrNone('SELECT M.memberid, F.token FROM FCM_Token F, Members M, Chatmembers C WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1', [chatId])
+            let test = `
+            SELECT M.memberid, M.nickname, M.firstname, M.lastname, M.email, M.phone_number, M.display_type, F.token 
+            FROM FCM_Token F, Members M, Chatmembers C 
+            WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1`;
+            db.manyOrNone(test, [chatId])
                 .then(rows => {
                     for (let i = 0; i < rows.length; i++) {
-                        fcm_functions.sendToIndividual(rows[0].token, [message, email, chatId], null, null);
+                        let objectToSend = {
+                            message: message,
+                            email: email,
+                            chatId: chatId,
+                            sqlOutput: rows,
+                            currentMember: rows[i].memberid
+                        }
+
+                        if (email !== rows[i].email) {
+                            fcm_functions.sendToIndividual(rows[i].token, objectToSend, null, null);
+                        }
                     }
                     res.send({
                         success: true

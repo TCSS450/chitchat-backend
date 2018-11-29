@@ -63,21 +63,45 @@ function sendNotificationFriendRequest(senderString, token) {
     }
 }
 
- function getChatNotificationMessage(from, msg, chatId, token) {
+ function getChatNotificationMessage(dataPackage, token) {
+     /*1: Display user with their NICKNAME
+2: Display user with their FULL NAME (FIRST + LAST)
+3: Display user with EMAIL
+*/
+    let rowWithoutCurrentUser = [];
+    let buildUp = "";
+    for (let i = 0; i < dataPackage.sqlOutput.length; i++) {
+        if (dataPackage.sqlOutput[i].memberid !== dataPackage.currentMember) {
+            rowWithoutCurrentUser.push(dataPackage.sqlOutput[i]);
+        }
+    }
+    for (let i = 0; i < rowWithoutCurrentUser.length; i++) {
+        const displayType = rowWithoutCurrentUser[i].display_type;
+        if (displayType === 1) { //nn
+            buildUp += rowWithoutCurrentUser[i].nickname + ', ';
+        } else if (displayType === 2) { // full name
+            buildUp += rowWithoutCurrentUser[i].firstname + ' ' + rowWithoutCurrentUser[i].lastname + ', ';
+        } else if (displayType === 3) { // email
+            buildUp += rowWithoutCurrentUser[i].email + ', ';
+        }
+    }
+    buildUp = buildUp.slice(0, -1);
+    buildUp = buildUp.slice(0, -1);
+
      return {
         android: {
             notification: {
-                title: 'New Message from '.concat(from),
-                body: msg,
+                title: 'New Message from '.concat(dataPackage.email),
+                body: dataPackage.message,
                 color: "#0000FF",
                 icon: '@drawable/requests'
             },
             data: {
                 "type": "contact",
-                "sender": from,
-                "message": msg,
-                "chatId": ''+chatId
-
+                "sender": dataPackage.email,
+                "message": dataPackage.message,
+                "chatId": ''+dataPackage.chatId,
+                "otherMembers": buildUp
             }
         },
         "token": token
@@ -124,7 +148,8 @@ function sendNotificationFriendRequest(senderString, token) {
 function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif) {
 
     if (friendSentNotif === null && friendAcceptedNotif === null) {
-        message = getChatNotificationMessage(chatNotif[1], chatNotif[0], chatNotif[2], token);
+        //from (email), msg, chatId
+        message = getChatNotificationMessage(chatNotif, token);
     } else if (chatNotif === null && friendAcceptedNotif === null) {
         message = getFriendRequestSent(friendSentNotif[0], token);
     } else if (chatNotif === null && friendSentNotif === null) {
