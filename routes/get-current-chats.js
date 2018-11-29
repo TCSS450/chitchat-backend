@@ -29,11 +29,31 @@ router.post('/', (req, res) => {
                                 memberProfile = rows;
                                 chatDetails[i].memberProfiles.push(rows);
                                 console.log("here");
+
+                                /*for (let j = 0; j < rows; j++) {
+                                    console.log(rows[j]);
+                                    chatDetails[i].memberProfiles.push(rows[j]);
+                                }*/
+                                
                             }).catch(() => res.send(defaultReturn))
                 }
             }
             getMembersInChat()
                 .then(() => {
+
+
+                    for (let i = 0; i < chatDetails.length; i++) {
+                        for (let j = 0; j < chatDetails[i].memberProfiles[0].length; j++) {
+                            let profiles = chatDetails[i].memberProfiles[0]
+                            chatDetails[i].memberProfiles = [];
+                            for (let k = 0; k < profiles.length; k++) {
+                                chatDetails[i].memberProfiles.push(profiles[k]);
+                            }
+                        }
+                    }
+
+
+
                     res.send({"status": 1, "chatDetails": chatDetails});
                 }).catch(() => res.send(defaultReturn))
         }).catch(() => res.send(defaultReturn))
