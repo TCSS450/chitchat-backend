@@ -39,9 +39,9 @@ router.post("/send", (req, res) => {
                             currentMember: rows[i].memberid
                         }
 
-                        if (email !== rows[i].email) {
+                        //if (email !== rows[i].email) {
                             fcm_functions.sendToIndividual(rows[i].token, objectToSend, null, null);
-                        }
+                        //}
                     }
                     res.send({
                         success: true
