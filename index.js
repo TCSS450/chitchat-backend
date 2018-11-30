@@ -28,6 +28,8 @@ app.use('/weather', require('./routes/weather.js'));
 app.use('/get-profiles-by-id', require('./routes/get-profiles-by-id.js'));
 app.use('/get-current-chats', require('./routes/get-current-chats.js'));
 app.use('/update-display-type', require('./routes/update-display-type.js'));
+app.use('/send-referral', require('./routes/send-referral.js'));
+
 
 
 
@@ -38,14 +40,21 @@ app.use('/update-display-type', require('./routes/update-display-type.js'));
  * Create a web page in HTML/CSS and have this end point return it. 
  * Look up the node module 'fs' ex: require('fs');
  */
+app.use(express.static("webpage"));
+
 app.get("/", (req, res) => {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    for (i = 1; i < 7; i++) {
+    //res.writeHead(200, {'Content-Type': 'text/html'});
+    //res.sendFile(path.join('/webpage','./index.html'));
+    //res.sendFile('./webpage/index.html');
+    res.sendFile("index.html", {"root": './webpage'});
+
+    /*for (i = 1; i < 7; i++) {
         //write a response to the client
         res.write('<h' + i + ' style="color:blue">Hello World!</h' + i + '>'); 
-    }
-    res.end(); //end the response
+    }*/
+    //res.end(); //end the response
 });
+
 
 app.listen(process.env.PORT || 5000, () => {
     console.log("Server up and running on port: " + (process.env.PORT || 5000));

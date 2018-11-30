@@ -58,12 +58,37 @@ function sendEmail(receiver, verificationCode) {
             pass: "_1134206!"
         }
       });
-      
       var mailOptions = {
         from: 'cc.chitchatbot@gmail.com',
         to: receiver,
         subject: 'Welcome to Chit Chat!',
         text: 'Please verify your account using the code: ' + verificationCode
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+}
+
+function sendReferalEmail(receiver, memberName) {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            //TODO Make these Heroku Variables
+            user: "cc.chitchatbot@gmail.com",
+            pass: "_1134206!"
+        }
+      });
+      var mailOptions = {
+        from: 'cc.chitchatbot@gmail.com',
+        to: receiver,
+        subject: 'Welcome to Chit Chat!',
+        text: `Join us at ChitChat!\n` + 
+            memberName + ` has sent you an invitation to join our new chat app!\nPlease follow the link below!\nhttps://group3-backend.herokuapp.com/`
       };
       
       transporter.sendMail(mailOptions, function(error, info){
@@ -87,5 +112,5 @@ function getHash(pw, salt) {
 
 
 module.exports = { 
-    db, getHash, sendEmail, isEmailValid, admin, fcm_functions, getSenderStringByDisplayType, utilityGetTokenForRecipient
+    db, getHash, sendEmail, sendReferalEmail, isEmailValid, admin, fcm_functions, getSenderStringByDisplayType, utilityGetTokenForRecipient
 };
