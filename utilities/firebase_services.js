@@ -178,7 +178,7 @@ function sendIsTypingPing(token, member) {
             },
             data: {
                 "type": "typing",
-                "member": member
+                "members": member
             }
         },
         "token": token
