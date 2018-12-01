@@ -180,6 +180,7 @@ function sendIsTypingPing(token, member) {
                 icon: '@drawable/requests'
             },*/
             data: {
+                "type": "contact",
                 "member": member
             }
         },
