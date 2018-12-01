@@ -173,12 +173,9 @@ function sendIsTypingPing(token, member) {
 
     var message = {
         android: {
-            /*notification: {
+            notification: {
                 title: 'Incoming friend request!',
-                body: senderString + ' sent you a friend request',
-                color: "#32CD32",
-                icon: '@drawable/requests'
-            },*/
+            },
             data: {
                 "type": "typing",
                 "member": member
