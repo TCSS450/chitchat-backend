@@ -168,7 +168,32 @@ function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif
             console.log('Error sending message 2:', error);
         });
 }
-let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest };
+
+function sendIsTypingPing(token, member) {
+
+    var message = {
+        android: {
+            /*notification: {
+                title: 'Incoming friend request!',
+                body: senderString + ' sent you a friend request',
+                color: "#32CD32",
+                icon: '@drawable/requests'
+            },*/
+            data: {
+                "member": member
+            }
+        },
+        "token": token
+    }
+    admin.messaging().send(message)
+        .then(() => {
+            console.log("sent is typing ping");
+            console.log(message);
+        })
+
+}
+
+let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest, sendIsTypingPing };
 module.exports = {
     admin, fcm_functions
 };

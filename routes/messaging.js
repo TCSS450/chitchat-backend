@@ -96,4 +96,25 @@ router.post("/getAll", (req, res) => {
             })
         });
 });
+
+
+router.post("/is-typing", (req, res) => {
+    const chatid = req.body['chatid'];
+    const membername = req.body['membername']; 
+    const memberid = req.body['memberid'];
+    const query = `
+    SELECT M.memberid, M.nickname, M.firstname, M.display_type, M.lastname, M.email, M.phone_number, M.display_type, F.token
+    FROM FCM_Token F, Members M, Chatmembers C
+    WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1 AND M.memberid != $2`;
+    if (chatid && memberid) {
+        db.any(query, [chatid, memberid])
+            .then(rows => {
+                for (let i = 0; i < rows.length; i++) {
+                    fcm_functions.sendIsTypingPing(rows[i].token, membername);
+                }
+                res.send({"status": 1});
+            })
+    }
+});
+
 module.exports = router;
