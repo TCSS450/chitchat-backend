@@ -173,9 +173,11 @@ function sendIsTypingPing(token, member) {
 
     var message = {
         android: {
+            /*
             notification: {
                 title: 'Someone is typing!',
             },
+            */
             data: {
                 "type": "typing",
                 "members": member
