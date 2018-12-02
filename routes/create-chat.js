@@ -34,7 +34,7 @@ function arraysEqual(_arr1, _arr2) {
 function makeNewChat(chatname, defaultReturn, res, chatmembers) {
     chatidToSend = -1;
     console.log(chatmembers);
-    db.any("INSERT INTO Chats (name) VALUES ($1)", [chatname])
+    db.any("INSERT INTO Chats (name, last_activity) VALUES ($1, CURRENT_TIMESTAMP)", [chatname])
     .then(() => {
         db.any("SELECT * FROM Chats WHERE chatid = (SELECT MAX(chatid) FROM Chats)")
             .then(rows => {
@@ -55,7 +55,8 @@ function makeNewChat(chatname, defaultReturn, res, chatmembers) {
                         res.send({"status": 1, "chatid": chatidToSend});
                     }).catch(() => res.send(defaultReturn));
             }).catch(() => {res.send(defaultReturn)})
-    }).catch(() => {res.send(defaultReturn)})
+    }).catch((err) => {
+        console.log(err);res.send(defaultReturn)})
 }
 
 router.post("/", (req, res) => {

@@ -11,7 +11,14 @@ router.post('/', (req, res) => {
     const member = req.body['memberid'];
     const defaultReturn = {"status": 2};
     if (member) {
-        db.any("SELECT chatid FROM chatmembers WHERE memberid = $1", [member])
+
+        const query = `
+        SELECT C.chatid, H.last_activity, H.name 
+        FROM Chatmembers C, Chats H 
+        WHERE memberid = $1 AND C.chatid = H.chatid
+        ORDER BY last_activity DESC;
+        `;
+        db.any(query, [member])
         .then(rows => {
             let chatDetails = [];
             for (let i = 0; i < rows.length; i++) {
@@ -29,19 +36,11 @@ router.post('/', (req, res) => {
                                 memberProfile = rows;
                                 chatDetails[i].memberProfiles.push(rows);
                                 console.log("here");
-
-                                /*for (let j = 0; j < rows; j++) {
-                                    console.log(rows[j]);
-                                    chatDetails[i].memberProfiles.push(rows[j]);
-                                }*/
-                                
                             }).catch(() => res.send(defaultReturn))
                 }
             }
             getMembersInChat()
                 .then(() => {
-
-
                     for (let i = 0; i < chatDetails.length; i++) {
                         for (let j = 0; j < chatDetails[i].memberProfiles[0].length; j++) {
                             let profiles = chatDetails[i].memberProfiles[0]
@@ -51,9 +50,6 @@ router.post('/', (req, res) => {
                             }
                         }
                     }
-
-
-
                     res.send({"status": 1, "chatDetails": chatDetails});
                 }).catch(() => res.send(defaultReturn))
         }).catch(() => res.send(defaultReturn))

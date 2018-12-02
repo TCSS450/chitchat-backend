@@ -38,14 +38,19 @@ router.post("/send", (req, res) => {
                             sqlOutput: rows,
                             currentMember: rows[i].memberid
                         }
-
-                        //if (email !== rows[i].email) {
-                            fcm_functions.sendToIndividual(rows[i].token, objectToSend, null, null);
-                        //}
+                        fcm_functions.sendToIndividual(rows[i].token, objectToSend, null, null);
                     }
-                    res.send({
+
+                    const subQuery = `UPDATE Chats SET last_activity = CURRENT_TIMESTAMP WHERE chatid = $1;`
+                    db.any(subQuery, [chatId])
+                        .then(() => {
+                            //res.send({"status": 1});
+                            res.send({success: true});
+    
+                    })
+                    /*res.send({
                         success: true
-                    });
+                    });*/
                 }).catch(err => {
                     console.log(err);
                     res.send({

@@ -29,8 +29,7 @@ app.use('/get-profiles-by-id', require('./routes/get-profiles-by-id.js'));
 app.use('/get-current-chats', require('./routes/get-current-chats.js'));
 app.use('/update-display-type', require('./routes/update-display-type.js'));
 app.use('/send-referral', require('./routes/send-referral.js'));
-
-
+app.use('/add-member-to-chat', require('./routes/add-member-to-chat.js'));
 
 
 
