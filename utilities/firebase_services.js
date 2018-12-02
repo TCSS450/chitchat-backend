@@ -188,7 +188,26 @@ function sendIsTypingPing(token, member) {
 
 }
 
-let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest, sendIsTypingPing };
+function sendDoneTypingPing(token, member) {
+
+    var message = {
+        android: {
+            data: {
+                "type": "done-typing",
+                "members": member
+            }
+        },
+        "token": token
+    }
+    admin.messaging().send(message)
+        .then(() => {
+            console.log("sent done typing ping");
+            console.log(message);
+        })
+
+}
+
+let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest, sendIsTypingPing, sendDoneTypingPing };
 module.exports = {
     admin, fcm_functions
 };

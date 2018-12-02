@@ -124,4 +124,25 @@ router.post("/is-typing", (req, res) => {
     }
 });
 
+router.post("/done-typing", (req, res) => {
+    const chatid = req.body['chatid'];
+    const membername = req.body['membername']; 
+    const memberid = req.body['memberid'];
+    const query = `
+    SELECT M.memberid, M.nickname, M.firstname, M.display_type, M.lastname, M.email, M.phone_number, M.display_type, F.token
+    FROM FCM_Token F, Members M, Chatmembers C
+    WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1 AND M.memberid != $2`;
+    if (chatid && memberid && membername) {
+        db.any(query, [chatid, memberid])
+            .then(rows => {
+                for (let i = 0; i < rows.length; i++) {
+                    fcm_functions.sendDoneTypingPing(rows[i].token, membername);
+                }
+                res.send({"status": 1});
+            }).catch(() => res.send({"status": 2}));
+    } else {
+        res.send({"status": 2});
+    }
+});
+
 module.exports = router;
