@@ -174,7 +174,7 @@ function sendIsTypingPing(token, member) {
     var message = {
         android: {
             notification: {
-                title: 'Incoming friend request!',
+                title: 'Someone is typing!',
             },
             data: {
                 "type": "typing",
