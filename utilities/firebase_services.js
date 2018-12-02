@@ -169,13 +169,14 @@ function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif
         });
 }
 
-function sendIsTypingPing(token, member) {
+function sendIsTypingPing(token, member, chatid) {
 
     var message = {
         android: {
             data: {
                 "type": "typing",
-                "members": member
+                "members": member,
+                "chatid": chatid
             }
         },
         "token": token
@@ -188,13 +189,14 @@ function sendIsTypingPing(token, member) {
 
 }
 
-function sendDoneTypingPing(token, member) {
+function sendDoneTypingPing(token, member, chatid) {
 
     var message = {
         android: {
             data: {
                 "type": "done-typing",
-                "members": member
+                "members": member,
+                "chatid": chatid
             }
         },
         "token": token

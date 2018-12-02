@@ -115,7 +115,7 @@ router.post("/is-typing", (req, res) => {
         db.any(query, [chatid, memberid])
             .then(rows => {
                 for (let i = 0; i < rows.length; i++) {
-                    fcm_functions.sendIsTypingPing(rows[i].token, membername);
+                    fcm_functions.sendIsTypingPing(rows[i].token, membername, chatid);
                 }
                 res.send({"status": 1});
             }).catch(() => res.send({"status": 2}));
@@ -136,7 +136,7 @@ router.post("/done-typing", (req, res) => {
         db.any(query, [chatid, memberid])
             .then(rows => {
                 for (let i = 0; i < rows.length; i++) {
-                    fcm_functions.sendDoneTypingPing(rows[i].token, membername);
+                    fcm_functions.sendDoneTypingPing(rows[i].token, membername, chatid);
                 }
                 res.send({"status": 1});
             }).catch(() => res.send({"status": 2}));
