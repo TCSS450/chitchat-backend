@@ -169,14 +169,15 @@ function sendToIndividual(token, chatNotif, friendSentNotif, friendAcceptedNotif
         });
 }
 
-function sendIsTypingPing(token, member, chatid) {
+function sendIsTypingPing(token, member, chatid, memberid) {
 
     var message = {
         android: {
             data: {
                 "type": "typing",
                 "members": member,
-                "chatid": "" + chatid
+                "chatid": "" + chatid,
+                "memberid_whos_typing": ''+memberid
             }
         },
         "token": token
@@ -189,14 +190,14 @@ function sendIsTypingPing(token, member, chatid) {
 
 }
 
-function sendDoneTypingPing(token, member, chatid) {
-
+function sendDoneTypingPing(token, member, chatid, memberid) {
     var message = {
         android: {
             data: {
                 "type": "done-typing",
                 "members": member,
-                "chatid": "" + chatid
+                "chatid": "" + chatid,
+                "memberid_whos_typing": ''+memberid
             }
         },
         "token": token
@@ -206,10 +207,37 @@ function sendDoneTypingPing(token, member, chatid) {
             console.log("sent done typing ping");
             console.log(message);
         })
-
 }
 
-let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest, sendIsTypingPing, sendDoneTypingPing };
+function notifyStayingMembers(token, chatid, deletedMember) {
+    var message = {
+        android: {
+            data: {
+                "type": "notify-staying",
+                "deletedMemberId": ''+deletedMember,
+                "chatid": '' + chatid
+            }
+        },
+        "token": token
+    }
+    admin.messaging().send(message).then(() => {console.log(message)});
+} 
+
+function notifyRemovedMember(token, chatid) {
+    var message = {
+        android: {
+            data: {
+                "type": "notify-removed",
+                "chatid": '' + chatid
+            }
+        },
+        "token": token
+    }
+    admin.messaging().send(message).then(() => {console.log(message)});
+}
+
+let fcm_functions = { sendToTopic, sendToIndividual, sendNotificationFriendRequest,
+     sendIsTypingPing, sendDoneTypingPing, notifyRemovedMember, notifyStayingMembers };
 module.exports = {
     admin, fcm_functions
 };

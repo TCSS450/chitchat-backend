@@ -34,6 +34,8 @@ router.post('/', (req, res) => {
                 res.send({"weather":weather.data, "success": true});
             }
         }); 
+
+        
     } else { // did not supply right parameters
         res.send({"success": false});
     }

@@ -100,6 +100,32 @@ function sendReferalEmail(receiver, memberName) {
       });
 }
 
+function sendVerificationEmailAfterReferal(receiver, memberName, code) {
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            //TODO Make these Heroku Variables
+            user: "cc.chitchatbot@gmail.com",
+            pass: "_1134206!"
+        }
+      });
+      var mailOptions = {
+        from: 'cc.chitchatbot@gmail.com',
+        to: receiver,
+        subject: 'Welcome to Chit Chat!',
+        text: 'Hello ' + memberName + '! People are starting to search for you. Please confirm your account using the code ' + code + ' to get in on the action!' 
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+}
+
+
 /**
  * Method to get a salted hash.
  * We put this in its own method to keep consistency
@@ -112,5 +138,5 @@ function getHash(pw, salt) {
 
 
 module.exports = { 
-    db, getHash, sendEmail, sendReferalEmail, isEmailValid, admin, fcm_functions, getSenderStringByDisplayType, utilityGetTokenForRecipient
+    db, getHash, sendVerificationEmailAfterReferal,sendEmail, sendReferalEmail, isEmailValid, admin, fcm_functions, getSenderStringByDisplayType, utilityGetTokenForRecipient
 };

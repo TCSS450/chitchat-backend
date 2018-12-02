@@ -30,6 +30,7 @@ app.use('/get-current-chats', require('./routes/get-current-chats.js'));
 app.use('/update-display-type', require('./routes/update-display-type.js'));
 app.use('/send-referral', require('./routes/send-referral.js'));
 app.use('/add-member-to-chat', require('./routes/add-member-to-chat.js'));
+app.use('/remove-member-from-chat', require('./routes/remove-member-from-chat'));
 
 
 

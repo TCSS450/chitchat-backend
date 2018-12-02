@@ -13,16 +13,18 @@ router.post('/', (req, res) => {
         db.any("SELECT firstname, lastname FROM members WHERE memberid = $1", [memberid])
             .then(rows => {
                 if (rows.length === 1) {
-                    db.any("SELECT email, is_verified FROM members WHERE email = $1", [email])
+                    db.any("SELECT email, verification, firstname, lastname, is_verified FROM members WHERE email = $1", [email])
                         .then(secRows => {
                             if (secRows.length === 0) {
                                 utility.sendReferalEmail(email, rows[0].firstname + ' ' + rows[0].lastname);
                                 res.send({"status": 1});
                             } else {
                                 if (secRows.length === 1) {
-                                    if (secRows[0].is_verified) {
+                                    if (secRows[0].is_verified) { // verified
                                         res.send({"status": 2});
-                                    } else {
+                                    } else { // not verified
+                                        const fullname = secRows[0].firstname + ' ' + secRows[0].lastname;
+                                        utility.sendVerificationEmailAfterReferal(email, fullname, secRows[0].verification);
                                         res.send({"status": 3});
                                     }
                                 } else {
