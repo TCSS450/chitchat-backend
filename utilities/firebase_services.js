@@ -176,7 +176,7 @@ function sendIsTypingPing(token, member, chatid) {
             data: {
                 "type": "typing",
                 "members": member,
-                "chatid": chatid
+                "chatid": "" + chatid
             }
         },
         "token": token
@@ -196,7 +196,7 @@ function sendDoneTypingPing(token, member, chatid) {
             data: {
                 "type": "done-typing",
                 "members": member,
-                "chatid": chatid
+                "chatid": "" + chatid
             }
         },
         "token": token

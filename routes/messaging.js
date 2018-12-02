@@ -112,13 +112,18 @@ router.post("/is-typing", (req, res) => {
     FROM FCM_Token F, Members M, Chatmembers C
     WHERE M.memberid = F.memberid AND C.memberid = M.memberid AND C.chatid = $1 AND M.memberid != $2`;
     if (chatid && memberid && membername) {
+        console.log('here')
         db.any(query, [chatid, memberid])
             .then(rows => {
                 for (let i = 0; i < rows.length; i++) {
+                    console.log('here2');
                     fcm_functions.sendIsTypingPing(rows[i].token, membername, chatid);
                 }
                 res.send({"status": 1});
-            }).catch(() => res.send({"status": 2}));
+            }).catch((err) => {
+                console.log(err);
+                res.send({"status": 2})
+            })
     } else {
         res.send({"status": 2});
     }
