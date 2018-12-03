@@ -47,7 +47,8 @@ function sendNotificationFriendRequest(senderString, token) {
                     icon: '@drawable/requests'
                 },
                 data: {
-                    "type": "friend-request"
+                    "type": "friend-request",
+                    "senderString": senderString
                 }
             },
             "token": token
