@@ -141,7 +141,8 @@ function sendNotificationFriendRequest(senderString, token) {
                 icon: '@drawable/requests'
             },
             data: {
-                "type": "accepted"
+                "type": "accepted",
+                "senderString": senderString
             }
         },
         "token": token
