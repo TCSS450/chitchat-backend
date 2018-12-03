@@ -123,7 +123,8 @@ function sendNotificationFriendRequest(senderString, token) {
                 icon: '@drawable/requests'
             },
             data: {
-                "type": "sent"
+                "type": "sent",
+                "senderString": senderString
             }
         },
         "token": token
@@ -132,6 +133,7 @@ function sendNotificationFriendRequest(senderString, token) {
  }
 
  function getFriendRequestAccepted(senderString, token) {
+     console.log("here?", senderString);
     return {
         android: {
             notification: {
